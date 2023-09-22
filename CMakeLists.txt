@@ -9,6 +9,7 @@ include_directories(${ODBC_INCLUDE_DIRS})
 link_directories(${ODBC_LIBRARY_DIRS})
 
 add_executable(lab1 main.cpp
-        config_reader.h)
+        config_reader.h
+        models/Pharmacy.h)
 
 target_link_libraries(lab1 ${ODBC_LIBRARIES})
