@@ -3,8 +3,8 @@
 #include <sqlext.h>
 #include <string>
 #include <vector>
-#include "config_reader.h"
-#include "sql_executor.h"
+#include "utils/config_reader.h"
+#include "utils/sql_executor.h"
 
 using namespace std;
 
