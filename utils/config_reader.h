@@ -6,40 +6,42 @@
 #include <fstream>
 #include <unordered_map>
 
+using namespace std;
+
 class ConfigReader {
 public:
-    explicit ConfigReader(const std::string &configFileName) : configFile(configFileName) {
+    explicit ConfigReader(const string &configFileName) : configFile(configFileName) {
         try {
-            std::ifstream configFileStream(configFileName);
+            ifstream configFileStream(configFileName);
             if (!configFileStream.is_open()) {
-                throw std::runtime_error("Failed to open config file: " + configFileName);
+                throw runtime_error("Failed to open config file: " + configFileName);
             }
 
-            std::string line;
-            while (std::getline(configFileStream, line)) {
+            string line;
+            while (getline(configFileStream, line)) {
                 size_t delimiterPos = line.find('=');
-                if (delimiterPos != std::string::npos) {
-                    std::string key = line.substr(0, delimiterPos);
-                    std::string value = line.substr(delimiterPos + 1);
+                if (delimiterPos != string::npos) {
+                    string key = line.substr(0, delimiterPos);
+                    string value = line.substr(delimiterPos + 1);
                     configData[key] = value;
                 }
             }
-        } catch (const std::exception &ex) {
-            throw std::runtime_error("Error reading config file: " + std::string(ex.what()));
+        } catch (const exception &ex) {
+            throw runtime_error("Error reading config file: " + string(ex.what()));
         }
     }
 
-    std::string get(const std::string &key) const {
+    string get(const string &key) const {
         if (configData.find(key) != configData.end()) {
             return configData.at(key);
         } else {
-            throw std::runtime_error("Config key not found: " + key);
+            throw runtime_error("Config key not found: " + key);
         }
     }
 
 private:
-    std::unordered_map<std::string, std::string> configData;
-    const std::string configFile;
+    unordered_map<string, string> configData;
+    const string configFile;
 };
 
 
