@@ -14,6 +14,7 @@ using namespace std;
 class SqlExecutor {
 public:
     static vector<vector<string>> executeSql(SQLHDBC hDbc, const string &sql) {
+        cout << sql << endl;
         vector<vector<string>> results;
 
         SQLHSTMT hStmt;
