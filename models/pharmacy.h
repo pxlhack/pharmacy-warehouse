@@ -15,20 +15,22 @@ class Pharmacy {
 
 public:
     Pharmacy(string name, string address, string phoneNumber) :
-            name(std::move(name)),
-            address(std::move(address)),
-            phoneNumber(std::move(phoneNumber)) {}
+            name(move(name)),
+            address(move(address)),
+            phoneNumber(move(phoneNumber)) {}
 
-    int save(SQLHDBC hDbc) {
-        std::ostringstream oss;
+    int save(SQLHDBC sqlhdbc) {
+        ostringstream oss;
         oss << "INSERT INTO pharmacies(name, address, phone_number) VALUES ('"
             << name << "', '" << address << "', '" << phoneNumber << "') RETURNING id;";
 
-        std::string insertSql = oss.str();
+        string insertSql = oss.str();
         cout << insertSql << endl;
 
-        std::vector<std::vector<std::string>> results = SqlExecutor::executeSql(hDbc, insertSql);
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, insertSql);
         this->id = stoi(results[0][0]);
+
+        return this->id;
     }
 
 private:
