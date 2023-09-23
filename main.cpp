@@ -5,6 +5,7 @@
 #include <vector>
 #include "utils/config_reader.h"
 #include "utils/sql_executor.h"
+#include "utils/menu.h"
 
 using namespace std;
 
@@ -54,7 +55,8 @@ int main() {
 
         if (sqlreturn == SQL_SUCCESS || sqlreturn == SQL_SUCCESS_WITH_INFO) {
 
-            printTables(hDbc);
+            Menu menu(hDbc);
+            menu.testMenu();
 
             SQLDisconnect(hDbc);
         } else {
@@ -68,6 +70,7 @@ int main() {
         std::cerr << e.what() << std::endl;
         return 1;
     }
+
 
     return 0;
 }

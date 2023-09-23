@@ -12,6 +12,7 @@ add_executable(lab1 main.cpp
         utils/config_reader.h
         models/pharmacy.h
         utils/sql_executor.h
+        utils/menu.h
         utils/table_printer.h
 )
 
