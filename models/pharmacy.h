@@ -25,7 +25,6 @@ public:
             << name << "', '" << address << "', '" << phoneNumber << "') RETURNING id;";
 
         string insertSql = oss.str();
-        cout << insertSql << endl;
 
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, insertSql);
         this->id = stoi(results[0][0]);
@@ -34,7 +33,7 @@ public:
     }
 
     static vector<Pharmacy> findAll(SQLHDBC sqlhdbc) {
-        string selectSql = "SELECT * FROM pharmacies";
+        string selectSql = "SELECT * FROM pharmacies;";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, selectSql);
 
         vector<Pharmacy> pharmacies;
