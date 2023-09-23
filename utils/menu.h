@@ -5,6 +5,7 @@
 #include <iostream>
 #include <regex>
 #include <iomanip>
+#include <limits>
 #include "../models/pharmacy.h"
 #include "table_printer.h"
 
@@ -35,9 +36,26 @@ public:
 
                 switch (num) {
                     case 1: {
-                        Pharmacy pharmacy("Name", "Address", "PhoneNumber");
+                        string name, address, phoneNumber;
+
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                        cout << "Enter name:\n>";
+                        getline(cin, name);
+
+                        cout << "Enter address:\n>";
+                        getline(cin, address);
+
+                        cout << "Enter phone number:\n>";
+                        getline(cin, phoneNumber);
+
+
+                        Pharmacy pharmacy(name, address, phoneNumber);
+
                         int id = pharmacy.save(hdbc);
+
                         cout << "Pharmacy with id=" << id << " created\n";
+
                         break;
                     }
                     case 2: {
