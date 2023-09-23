@@ -33,16 +33,37 @@ public:
         return this->id;
     }
 
-private:
+    static vector<Pharmacy> findAll(SQLHDBC sqlhdbc) {
+        string selectSql = "SELECT * FROM pharmacies";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, selectSql);
 
-public:
+        vector<Pharmacy> pharmacies;
+        for (const auto &row: results) {
+            Pharmacy pharmacy = parseFromVector(row);
+            pharmacies.push_back(pharmacy);
+        }
+        return pharmacies;
+    }
+
+
+private:
     Pharmacy() = default;
 
-private:
+    Pharmacy(int id, string name, string address, string phoneNumber) :
+            id(id),
+            name(move(name)),
+            address(move(address)),
+            phoneNumber(move(phoneNumber)) {}
+
     int id;
     string name;
     string address;
     string phoneNumber;
+
+    static Pharmacy parseFromVector(vector<string> vector) {
+        Pharmacy pharmacy(stoi(vector[0]), vector[1], vector[2], vector[3]);
+        return pharmacy;
+    }
 };
 
 
