@@ -9,11 +9,12 @@
 #include <sstream>
 #include <stdexcept>
 
+using namespace std;
 
 class SqlExecutor {
 public:
-    static std::vector<std::vector<std::string>> executeSql(SQLHDBC hDbc, const std::string &sql) {
-        std::vector<std::vector<std::string>> results;
+    static vector<vector<string>> executeSql(SQLHDBC hDbc, const string &sql) {
+        vector<vector<string>> results;
 
         SQLHSTMT hStmt;
 
@@ -30,10 +31,10 @@ public:
                           &errorCode, errorMsg,
                           SQL_MAX_MESSAGE_LENGTH, &errorMsgLen);
 
-            std::ostringstream errorStream;
+            ostringstream errorStream;
             errorStream << "SQL Error (" << sqlState << "): " << errorMsg;
 
-            throw std::runtime_error(errorStream.str());
+            throw runtime_error(errorStream.str());
 
         } else {
             SQLCHAR columnName[256];
@@ -44,7 +45,7 @@ public:
 
             if (columnCount > 0) {
                 while (SQLFetch(hStmt) == SQL_SUCCESS) {
-                    std::vector<std::string> row;
+                    vector<string> row;
                     for (int i = 1; i <= columnCount; i++) {
                         SQLGetData(hStmt, i,
                                    SQL_C_CHAR, columnName, sizeof(columnName), &columnNameLen);
