@@ -45,6 +45,9 @@ public:
         return pharmacies;
     }
 
+    vector<string> toStringVector() {
+        return {to_string(this->id), this->name, this->address, this->phoneNumber};
+    }
 
 private:
     Pharmacy() = default;
