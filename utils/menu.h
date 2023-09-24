@@ -9,6 +9,8 @@
 #include "../models/pharmacy.h"
 #include "../models/medicine.h"
 #include "table_printer.h"
+#include "../models/date.h"
+#include "../models/request.h"
 
 using namespace std;
 
@@ -18,6 +20,8 @@ using namespace std;
 \n\
 3) Add medicine\n\
 4) Get medicines list \n\
+\n\
+5) Add request\n\
 "
 
 class Menu {
@@ -128,6 +132,16 @@ public:
                         } else {
                             cout << "No medicines found." << endl;
                         }
+                        break;
+                    }
+
+                    case 5: {
+                        Date date1(1, 2, 2005);
+                        Date date2(4, 2, 2005);
+
+                        Request request(date1, date2, 1);
+                        request.save(hdbc);
+
                         break;
                     }
 
