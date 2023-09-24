@@ -15,6 +15,7 @@ add_executable(lab1 main.cpp
         utils/menu.h
         utils/table_printer.h
         models/medicine.h
+        models/request.h
         models/date.h
 )
 
