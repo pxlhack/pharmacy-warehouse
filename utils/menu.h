@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <limits>
 #include "../models/pharmacy.h"
+#include "../models/medicine.h"
 #include "table_printer.h"
 
 using namespace std;
@@ -14,6 +15,9 @@ using namespace std;
 #define HELP "Menu:\n\
 1) Add pharmacy\n\
 2) Get pharmacies list\n\
+\n\
+3) Add medicine\n\
+4) Get medicines list \n\
 "
 
 class Menu {
@@ -77,6 +81,52 @@ public:
 
                         } else {
                             cout << "No pharmacies found." << endl;
+                        }
+                        break;
+                    }
+
+                    case 3: {
+                        string name, manufacturer, price;
+
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                        cout << "Enter name:\n>";
+                        getline(cin, name);
+
+                        cout << "Enter manufacturer:\n>";
+                        getline(cin, manufacturer);
+
+                        cout << "Enter price:\n>";
+                        getline(cin, price);
+
+
+                        Medicine medicine(name, manufacturer, stoi(price));
+
+                        int id = medicine.save(hdbc);
+
+                        cout << "Medicine with id=" << id << " created\n";
+
+                        break;
+                    }
+                    case 4: {
+                        vector<Medicine> medicines = Medicine::findAll(hdbc);
+
+                        if (!medicines.empty()) {
+                            vector<string> headers = {"№", "Name", "Manufacturer", "Price"};
+
+                            vector<vector<string>> data;
+
+                            int i = 1;
+                            for (Medicine medicine: medicines) {
+                                vector<string> tmp = medicine.toStringVector();
+                                tmp[0] = to_string(i++);
+                                data.push_back(tmp);
+                            }
+
+                            TablePrinter::printTable(headers, data);
+
+                        } else {
+                            cout << "No medicines found." << endl;
                         }
                         break;
                     }
