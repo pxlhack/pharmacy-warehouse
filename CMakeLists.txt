@@ -14,6 +14,7 @@ add_executable(lab1 main.cpp
         utils/sql_executor.h
         utils/menu.h
         utils/table_printer.h
+        models/medicine.h
 )
 
 target_link_libraries(lab1 ${ODBC_LIBRARIES})
