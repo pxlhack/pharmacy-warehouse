@@ -142,8 +142,14 @@ public:
                         Date date1(1, 2, 2005);
                         Date date2(4, 2, 2005);
 
-                        Request request(date1, date2, 1);
-                        request.save(hdbc);
+                        Request request(date1, date2, 30);
+
+                        try {
+                            request.save(hdbc);
+                        }
+                        catch (const runtime_error &e) {
+                            cout << "Error: " << e.what() << endl;
+                        }
 
                         break;
                     }
