@@ -11,6 +11,7 @@
 #include "table_printer.h"
 #include "../models/date.h"
 #include "../models/request.h"
+#include "../models/medicine_buying.h"
 
 using namespace std;
 
@@ -22,6 +23,8 @@ using namespace std;
 4) Get medicines list \n\
 \n\
 5) Add request\n\
+\n\
+6) Add medicine buying\n\
 "
 
 class Menu {
@@ -141,6 +144,13 @@ public:
 
                         Request request(date1, date2, 1);
                         request.save(hdbc);
+
+                        break;
+                    }
+
+                    case 6: {
+                        MedicineBuying medicineBuying(1, 20, 20);
+                        medicineBuying.save(hdbc);
 
                         break;
                     }
