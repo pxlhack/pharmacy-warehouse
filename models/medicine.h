@@ -32,12 +32,12 @@ public:
         string selectSql = "SELECT * FROM medicines;";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, selectSql);
 
-        vector<Medicine> pharmacies;
+        vector<Medicine> medicines;
         for (const auto &row: results) {
-            Medicine pharmacy = parseFromVector(row);
-            pharmacies.push_back(pharmacy);
+            Medicine medicine = parseFromVector(row);
+            medicines.push_back(medicine);
         }
-        return pharmacies;
+        return medicines;
     }
 
     vector<string> toStringVector() {
@@ -59,8 +59,8 @@ public:
 private:
 
     static Medicine parseFromVector(vector<string> vector) {
-        Medicine pharmacy(stoi(vector[0]), vector[1], vector[2], stoi(vector[3]));
-        return pharmacy;
+        Medicine medicine(stoi(vector[0]), vector[1], vector[2], stoi(vector[3]));
+        return medicine;
     }
 };
 
