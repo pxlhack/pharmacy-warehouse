@@ -23,8 +23,9 @@ using namespace std;
 4) Get medicines list \n\
 \n\
 5) Add request\n\
+6) Get requests list\n\
 \n\
-6) Add medicine buying\n\
+7) Add medicine buying\n\
 "
 
 class Menu {
@@ -153,8 +154,31 @@ public:
 
                         break;
                     }
-
                     case 6: {
+                        vector<Request> requests = Request::findAll(hdbc);
+
+                        if (!requests.empty()) {
+                            vector<string> headers = {"№", "Creation date", "Completion date", "Pharmacy"};
+
+                            vector<vector<string>> data;
+
+                            int i = 1;
+                            for (Request request: requests) {
+                                vector<string> tmp = request.toStringVector(hdbc);
+                                tmp[0] = to_string(i++);
+                                data.push_back(tmp);
+                            }
+
+                            TablePrinter::printTable(headers, data);
+
+                        } else {
+                            cout << "No requests found." << endl;
+                        }
+                        break;
+                        break;
+                    }
+
+                    case 7: {
                         MedicineBuying medicineBuying(30, 20, 20);
 
                         try {
