@@ -17,6 +17,7 @@ add_executable(lab1 main.cpp
         models/medicine.h
         models/request.h
         models/date.h
+        models/medicine_buying.h
 )
 
 target_link_libraries(lab1 ${ODBC_LIBRARIES})
