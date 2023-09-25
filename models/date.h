@@ -11,10 +11,18 @@ public:
     Date(int day, int month, int year) :
             day(day), month(month), year(year) {}
 
-    string toString() {
+    string toString() const {
         ostringstream oss;
         oss << day << "/" << month << "/" << year;
         return oss.str();
+    }
+
+    static Date parseFromString(const string &str) {
+        int day = stoi(str.substr(0, 2));
+        int month = stoi(str.substr(3, 2));
+        int year = stoi(str.substr(6, 4));
+
+        return {day, month, year};
     }
 
 private:
