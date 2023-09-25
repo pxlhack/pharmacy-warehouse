@@ -63,8 +63,7 @@ private:
     string phoneNumber;
 
     static Pharmacy parseFromVector(vector<string> vector) {
-        Pharmacy pharmacy(stoi(vector[0]), vector[1], vector[2], vector[3]);
-        return pharmacy;
+        return {stoi(vector[0]), vector[1], vector[2], vector[3]};
     }
 };
 
