@@ -15,15 +15,15 @@ public:
         try {
             checkMedicineExistence(sqlhdbc);
             checkRequestExistence(sqlhdbc);
-
-            ostringstream oss;
-            oss << "INSERT INTO medicine_buyings(medicine_id, request_id, medicine_number) VALUES ("
-                << medicine_id << ", " << request_id << ", " << medicine_number << ");";
-            SqlExecutor::executeSql(sqlhdbc, oss.str());
-        } catch (const runtime_error &e) {
-            cerr << "Error: " << e.what() << endl;
+        }
+        catch (const runtime_error &e) {
             throw;
         }
+
+        ostringstream oss;
+        oss << "INSERT INTO medicine_buyings(medicine_id, request_id, medicine_number) VALUES ("
+            << medicine_id << ", " << request_id << ", " << medicine_number << ");";
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
 
 private:

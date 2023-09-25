@@ -155,8 +155,14 @@ public:
                     }
 
                     case 6: {
-                        MedicineBuying medicineBuying(1, 20, 20);
-                        medicineBuying.save(hdbc);
+                        MedicineBuying medicineBuying(30, 20, 20);
+
+                        try {
+                            medicineBuying.save(hdbc);
+                        }
+                        catch (const runtime_error &e) {
+                            cout << "Error: " << e.what() << endl;
+                        }
 
                         break;
                     }
