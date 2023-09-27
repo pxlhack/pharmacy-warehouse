@@ -56,6 +56,10 @@ public:
         return parseFromVector(results[0]);
     }
 
+    const string &getName() const {
+        return name;
+    }
+
 
 private:
     int id;
