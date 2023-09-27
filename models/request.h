@@ -77,6 +77,10 @@ public:
         return oss.str();
     }
 
+    int getPharmacyId() const {
+        return pharmacyId;
+    }
+
 
 private:
     int id;
