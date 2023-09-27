@@ -48,6 +48,16 @@ public:
         return {to_string(this->id), this->name, this->address, this->phoneNumber};
     }
 
+
+    string toString() {
+        ostringstream oss;
+        oss << "{id = " << id <<
+            "; name = " << name <<
+            "; address = " << address <<
+            "; phoneNumber = " << phoneNumber << "}\n";
+        return oss.str();
+    }
+
 private:
     Pharmacy() = default;
 
