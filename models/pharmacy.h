@@ -58,6 +58,10 @@ public:
         return oss.str();
     }
 
+    string getName() {
+        return name;
+    }
+
 private:
     Pharmacy() = default;
 
