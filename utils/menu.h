@@ -26,6 +26,7 @@ using namespace std;
 6) Get requests list\n\
 \n\
 7) Add medicine buying\n\
+8) Get medicine buyings list\n\
 "
 
 class Menu {
@@ -175,7 +176,6 @@ public:
                             cout << "No requests found." << endl;
                         }
                         break;
-                        break;
                     }
 
                     case 7: {
@@ -189,6 +189,55 @@ public:
                         }
 
                         break;
+                    }
+
+                    case 8: {
+                        vector<MedicineBuying> medicineBuyings = MedicineBuying::findAll(hdbc);
+
+                        if (!medicineBuyings.empty()) {
+                            vector<Medicine> medicines;
+                            for (MedicineBuying medicineBuying: medicineBuyings) {
+                                Medicine medicine = Medicine::findById(hdbc, medicineBuying.getMedicineId());
+                                medicines.push_back(medicine);
+                            }
+
+                            vector<Request> requests;
+                            for (MedicineBuying medicineBuying: medicineBuyings) {
+                                Request request = Request::findById(hdbc, medicineBuying.getRequestId());
+                                requests.push_back(request);
+                            }
+
+                            vector<Pharmacy> pharmacies;
+                            for (Request request: requests) {
+                                Pharmacy pharmacy = Pharmacy::findById(hdbc, request.getPharmacyId());
+                                pharmacies.push_back(pharmacy);
+                            }
+
+                            vector<int> numbers;
+                            for (int i = 0; i < medicineBuyings.size(); i++) {
+                                numbers.push_back(i + 1);
+                            }
+
+                            vector<string> headers = {"№", "Medicine", "Pharmacy", "Medicine number"};
+
+                            vector<vector<string>> data;
+                            for (int i = 0; i < medicineBuyings.size(); ++i) {
+                                vector<string> data_i;
+
+                                data_i.push_back(to_string(numbers[i]));
+                                data_i.push_back(medicines[i].getName());
+                                data_i.push_back(pharmacies[i].getName());
+                                data_i.push_back(to_string(medicineBuyings[i].getMedicineNumber()));
+
+                                data.push_back(data_i);
+                            }
+
+                            TablePrinter::printTable(headers, data);
+                        } else {
+                            cout << "No medicine buyings found." << endl;
+                        }
+                        break;
+
                     }
 
                 }
