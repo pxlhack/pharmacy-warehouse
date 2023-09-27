@@ -26,10 +26,28 @@ public:
         SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
 
+
+    static vector<MedicineBuying> findAll(SQLHDBC sqlhdbc){
+        string selectSql = "SELECT * FROM medicine_buyings;";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, selectSql);
+
+        vector<MedicineBuying> medicine_buyings;
+        for (const auto &row: results) {
+            MedicineBuying medicineBuying = parseFromVector(row);
+            medicine_buyings.push_back(medicineBuying);
+        }
+        return medicine_buyings;
+    }
+
+
 private:
     int medicine_id;
     int request_id;
     int medicine_number;
+
+    static MedicineBuying parseFromVector(const vector<string> &vector) {
+        return {stoi(vector[0]), stoi(vector[1]), stoi(vector[2])};
+    }
 
     void checkMedicineExistence(SQLHDBC sqlhdbc) {
         ostringstream oss;
