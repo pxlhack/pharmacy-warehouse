@@ -44,6 +44,19 @@ public:
         return {to_string(this->id), this->name, this->manufacturer, to_string(this->price)};
     }
 
+    static Medicine findById(SQLHDBC sqlhdbc, int id) {
+        ostringstream oss;
+        oss << "SELECT * FROM medicines WHERE id = " << id << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+
+        if (results.empty()) {
+            throw runtime_error("Medicine not found");
+        }
+
+        return parseFromVector(results[0]);
+    }
+
+
 private:
     int id;
     string name;
