@@ -49,6 +49,18 @@ public:
     }
 
 
+    static Pharmacy findById(SQLHDBC sqlhdbc, int id) {
+        ostringstream oss;
+        oss << "SELECT * FROM pharmacies WHERE id = " << id << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+
+        if (results.empty()) {
+            throw runtime_error("Pharmacy not found");
+        }
+
+        return parseFromVector(results[0]);
+    }
+
     string toString() {
         ostringstream oss;
         oss << "{id = " << id <<
