@@ -1,6 +1,11 @@
 #ifndef LAB1_SQL_EXECUTOR_H
 #define LAB1_SQL_EXECUTOR_H
 
+#ifdef __unix__
+
+#include <unistd.h>
+
+#endif
 
 #include <vector>
 #include <string>
@@ -14,7 +19,8 @@ using namespace std;
 class SqlExecutor {
 public:
     static vector<vector<string>> executeSql(SQLHDBC hDbc, const string &sql) {
-        cout << sql << endl;
+        printSql(sql);
+
         vector<vector<string>> results;
 
         SQLHSTMT hStmt;
@@ -61,6 +67,20 @@ public:
 
         return results;
     }
+
+private:
+    static void printSql(const string &sql) {
+#ifdef __unix__
+        if (isatty(fileno(stdout))) {
+            std::cout << "\x1b[32m" << sql << "\x1b[0m" << std::endl;
+        } else {
+            std::cout << sql << std::endl;
+        }
+#else
+        std::cout << "Текст без изменения цвета" << std::endl;
+#endif
+    }
+
 };
 
 
