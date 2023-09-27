@@ -68,6 +68,15 @@ public:
         return parseFromVector(results[0]);
     }
 
+    string toString() {
+        ostringstream oss;
+        oss << "{id = " << id <<
+            "; creationDate = " << creationDate.toString() <<
+            "; completionDate = " << completionDate.toString() <<
+            "; pharmacyId = " << pharmacyId << "}\n";
+        return oss.str();
+    }
+
 
 private:
     int id;
