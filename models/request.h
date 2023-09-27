@@ -56,6 +56,19 @@ public:
         return {to_string(id), creationDate.toString(), completionDate.toString(), results[0][0]};
     }
 
+    static Request findById(SQLHDBC sqlhdbc, int id) {
+        ostringstream oss;
+        oss << "SELECT * FROM requests WHERE id = " << id << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+
+        if (results.empty()) {
+            throw runtime_error("Request not found");
+        }
+
+        return parseFromVector(results[0]);
+    }
+
+
 private:
     int id;
     Date creationDate;
