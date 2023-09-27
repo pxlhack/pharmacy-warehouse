@@ -60,6 +60,14 @@ public:
         return name;
     }
 
+    string toString() {
+        ostringstream oss;
+        oss << "{id = " << id <<
+            "; name = " << name <<
+            "; manufacturer = " << manufacturer <<
+            "; price = " << price << "}\n";
+        return oss.str();
+    }
 
 private:
     int id;
