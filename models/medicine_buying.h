@@ -39,6 +39,17 @@ public:
         return medicine_buyings;
     }
 
+    int getMedicineId() const {
+        return medicine_id;
+    }
+
+    int getRequestId() const {
+        return request_id;
+    }
+
+    int getMedicineNumber() const {
+        return medicine_number;
+    }
 
 private:
     int medicine_id;
