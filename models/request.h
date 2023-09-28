@@ -81,6 +81,10 @@ public:
         return pharmacyId;
     }
 
+    int getId() const {
+        return id;
+    }
+
 
 private:
     int id;
