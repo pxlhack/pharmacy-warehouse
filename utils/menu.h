@@ -27,6 +27,7 @@ using namespace std;
 \n\
 7) Add medicine buying\n\
 8) Get medicine buyings list\n\
+0) Exit\n\
 "
 
 class Menu {
@@ -226,7 +227,6 @@ public:
 
                         break;
                     }
-
                     case 8: {
                         vector<MedicineBuying> medicineBuyings = MedicineBuying::findAll(hdbc);
 
