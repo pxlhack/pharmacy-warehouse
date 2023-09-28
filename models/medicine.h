@@ -69,6 +69,10 @@ public:
         return oss.str();
     }
 
+    int getId() const {
+        return id;
+    }
+
 private:
     int id;
     string name;
