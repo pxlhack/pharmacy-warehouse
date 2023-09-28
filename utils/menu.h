@@ -141,10 +141,29 @@ public:
                     }
 
                     case 5: {
-                        Date date1(1, 2, 2005);
-                        Date date2(4, 2, 2005);
+                        string creationDateString, completionDateString, pharmacyNumber;
 
-                        Request request(date1, date2, 30);
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                        cout << "Enter pharmacy number:\n>";
+                        getline(cin, pharmacyNumber);
+
+                        cout << "Enter creation date in format dd/mm/yyyy:\n>";
+                        getline(cin, creationDateString);
+
+                        cout << "Enter completion date in format dd/mm/yyyy:\n>";
+                        getline(cin, completionDateString);
+
+                        vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
+                        for (Pharmacy pharmacy: pharmacies) {
+                            cout << pharmacy.toString() << endl;
+                        }
+
+                        Date creationDate = Date::parseFromString(creationDateString);
+                        Date completionDate = Date::parseFromString(completionDateString);
+
+                        int pharmacyId = pharmacies[stoi(pharmacyNumber) - 1].getId();
+                        Request request(creationDate, completionDate, pharmacyId);
 
                         try {
                             request.save(hdbc);
