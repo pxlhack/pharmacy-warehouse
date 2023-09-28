@@ -155,9 +155,6 @@ public:
                         getline(cin, completionDateString);
 
                         vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
-                        for (Pharmacy pharmacy: pharmacies) {
-                            cout << pharmacy.toString() << endl;
-                        }
 
                         Date creationDate = Date::parseFromString(creationDateString);
                         Date completionDate = Date::parseFromString(completionDateString);
@@ -198,7 +195,27 @@ public:
                     }
 
                     case 7: {
-                        MedicineBuying medicineBuying(30, 20, 20);
+                        string medicineString, requestString, medicineNumberString;
+
+
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                        cout << "Enter medicine :\n>";
+                        getline(cin, medicineString);
+
+                        cout << "Enter request:\n>";
+                        getline(cin, requestString);
+
+                        cout << "Enter medicine number:\n>";
+                        getline(cin, medicineNumberString);
+
+                        vector<Medicine> medicines = Medicine::findAll(hdbc);
+                        int medicineId = medicines[stoi(medicineString) - 1].getId();
+
+                        vector<Request> requests = Request::findAll(hdbc);
+                        int requestId = requests[stoi(requestString) - 1].getId();
+
+                        MedicineBuying medicineBuying(medicineId, requestId, stoi(medicineNumberString));
 
                         try {
                             medicineBuying.save(hdbc);
@@ -259,6 +276,14 @@ public:
 
                     }
 
+                    case 0: {
+                        isWorked = false;
+                        break;
+                    }
+                    default: {
+                        cout << "Error" << endl;
+                        break;
+                    }
                 }
             }
 
