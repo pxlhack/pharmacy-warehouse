@@ -74,6 +74,10 @@ public:
         return name;
     }
 
+    int getId() const {
+        return id;
+    }
+
 private:
     Pharmacy() = default;
 
