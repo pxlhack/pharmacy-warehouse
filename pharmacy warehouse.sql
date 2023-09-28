@@ -4,10 +4,12 @@
 -- Аптеки (номер аптеки, название аптеки, адрес аптеки, номер телефона);
 -- Заявки (номер заявки, дата составления заявки, номер аптеки, дата выполнения заявки);
 -- Закупки лекарственных препаратов (номер заявки, код лекарства, количество (шт.)).
--- 
-CREATE USER pharmacy_administrator WITH SUPERUSER PASSWORD '1234';
+--
+CREATE USER pharmacy_administrator WITH PASSWORD '1234';
 
 CREATE DATABASE pharmacy_warehouse WITH OWNER pharmacy_administrator;
+GRANT CREATE ON DATABASE pharmacy_warehouse TO pharmacy_administrator;
+-- psql -U pharmacy_administrator -d pharmacy_warehouse -h 127.0.0.1 -W;
 
 CREATE TABLE IF NOT EXISTS medicines
 (
@@ -45,3 +47,4 @@ CREATE TABLE IF NOT EXISTS medicine_buyings
     FOREIGN KEY (request_id) REFERENCES requests (id),
     FOREIGN KEY (medicine_id) REFERENCES medicines (id)
 );
+
