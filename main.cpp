@@ -22,6 +22,47 @@ void printTables(SQLHDBC hDbc) {
     }
 }
 
+void checkTables(SQLHDBC sqlhdbc) {
+    std::string createTables = "CREATE TABLE IF NOT EXISTS medicines\n"
+                               "(\n"
+                               "    id           SERIAL PRIMARY KEY,\n"
+                               "    name         VARCHAR,\n"
+                               "    manufacturer VARCHAR,\n"
+                               "    price        INTEGER\n"
+                               ");\n"
+                               "\n"
+                               "CREATE TABLE IF NOT EXISTS pharmacies\n"
+                               "(\n"
+                               "    id           SERIAL PRIMARY KEY,\n"
+                               "    name         VARCHAR,\n"
+                               "    address      VARCHAR,\n"
+                               "    phone_number VARCHAR\n"
+                               ");\n"
+                               "\n"
+                               "CREATE TABLE IF NOT EXISTS requests\n"
+                               "(\n"
+                               "    id              SERIAL PRIMARY KEY,\n"
+                               "    creation_date   DATE,\n"
+                               "    completion_date DATE,\n"
+                               "    pharmacy_id     INTEGER,\n"
+                               "\n"
+                               "    FOREIGN KEY (pharmacy_id) REFERENCES pharmacies (id)\n"
+                               ");\n"
+                               "\n"
+                               "CREATE TABLE IF NOT EXISTS medicine_buyings\n"
+                               "(\n"
+                               "    request_id      INTEGER,\n"
+                               "    medicine_id     INTEGER,\n"
+                               "    medicine_number INTEGER,\n"
+                               "\n"
+                               "    PRIMARY KEY (request_id, medicine_id),\n"
+                               "    FOREIGN KEY (request_id) REFERENCES requests (id),\n"
+                               "    FOREIGN KEY (medicine_id) REFERENCES medicines (id)\n"
+                               ");";
+
+    std::vector<std::vector<std::string>> tableList = SqlExecutor::executeSql(sqlhdbc, createTables);
+}
+
 int main() {
     try {
         ConfigReader reader("../config.properties");
@@ -55,6 +96,7 @@ int main() {
 
         if (sqlreturn == SQL_SUCCESS || sqlreturn == SQL_SUCCESS_WITH_INFO) {
 
+            checkTables(hDbc);
             Menu menu(hDbc);
             menu.testMenu();
 
