@@ -97,8 +97,8 @@ private:
 
     static Request parseFromVector(const vector<string> &vector) {
         int id = stoi(vector[0]);
-        Date creationDate = Date::parseFromString(vector[1]);
-        Date completionDate = Date::parseFromString(vector[2]);
+        Date creationDate = Date::parseFromStringFromDB(vector[1]);
+        Date completionDate = Date::parseFromStringFromDB(vector[2]);
         int pharmacyId = stoi(vector[3]);
 
         return {id, creationDate, completionDate, pharmacyId};

@@ -25,6 +25,15 @@ public:
         return {day, month, year};
     }
 
+    static Date parseFromStringFromDB(const string &str) {
+        cout << str << endl;
+        int day = stoi(str.substr(0, 4));
+        int month = stoi(str.substr(5, 2));
+        int year = stoi(str.substr(8, 2));
+
+        return {day, month, year};
+    }
+
 private:
     int day;
     int month;
