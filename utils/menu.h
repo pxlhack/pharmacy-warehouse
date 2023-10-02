@@ -72,10 +72,7 @@ public:
 
 
                         Pharmacy pharmacy(name, address, phoneNumber);
-
-                        int id = pharmacy.save(hdbc);
-
-                        cout << "Pharmacy with id=" << id << " created\n";
+                        pharmacy.save(hdbc);
 
                         break;
                     }
@@ -314,7 +311,7 @@ public:
 
                         if (!manufacturers.empty()) {
                             vector<Country> countries;
-                            for (const Manufacturer& manufacturer: manufacturers) {
+                            for (const Manufacturer &manufacturer: manufacturers) {
                                 countries.push_back(Country::findById(hdbc, manufacturer.getCountryId()));
                             }
 
@@ -349,6 +346,7 @@ public:
                         isWorked = false;
                         break;
                     }
+
                     default: {
                         cout << "Error" << endl;
                         break;

@@ -19,17 +19,14 @@ public:
             address(move(address)),
             phoneNumber(move(phoneNumber)) {}
 
-    int save(SQLHDBC sqlhdbc) {
+    void save(SQLHDBC sqlhdbc) {
         ostringstream oss;
         oss << "INSERT INTO pharmacies(name, address, phone_number) VALUES ('"
-            << name << "', '" << address << "', '" << phoneNumber << "') RETURNING id;";
+            << name << "', '" << address << "', '" << phoneNumber << "');";
 
         string insertSql = oss.str();
 
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, insertSql);
-        this->id = stoi(results[0][0]);
-
-        return this->id;
     }
 
     static vector<Pharmacy> findAll(SQLHDBC sqlhdbc) {
