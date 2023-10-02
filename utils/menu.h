@@ -135,22 +135,36 @@ public:
                         vector<Medicine> medicines = Medicine::findAll(hdbc);
 
                         if (!medicines.empty()) {
-                            vector<string> headers = {"№", "Name", "Manufacturer", "Price"};
+
+                            vector<Manufacturer> manufacturers;
+                            for (const Medicine& medicine: medicines) {
+                                manufacturers.push_back(Manufacturer::findById(hdbc, medicine.getManufacturerId()));
+                            }
+
+                            vector<int> numbers;
+                            for (int i = 0; i < medicines.size(); i++) {
+                                numbers.push_back(i + 1);
+                            }
+
+                            vector<string> headers = {"№", "Medicine", "Manufacturer", "Price"};
 
                             vector<vector<string>> data;
 
-                            int i = 1;
-                            for (Medicine medicine: medicines) {
-                                vector<string> tmp = medicine.toStringVector();
-                                tmp[0] = to_string(i++);
-                                data.push_back(tmp);
+                            for (int i = 0; i < medicines.size(); ++i) {
+                                vector<string> data_i;
+                                data_i.push_back(to_string(numbers[i]));
+                                data_i.push_back(medicines[i].getName());
+                                data_i.push_back(manufacturers[i].getName());
+                                data_i.push_back(to_string(medicines[i].getPrice()));
+
+                                data.push_back(data_i);
                             }
 
                             TablePrinter::printTable(headers, data);
-
-                        } else {
-                            cout << "No medicines found." << endl;
+                            break;
                         }
+
+                        cout << "No medicines found." << endl;
                         break;
                     }
 
