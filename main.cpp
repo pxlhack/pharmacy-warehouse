@@ -9,56 +9,61 @@
 
 using namespace std;
 
-
-void printTables(SQLHDBC hDbc) {
-    std::string listTablesQuery = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';";
-    std::vector<std::vector<std::string>> tableList = SqlExecutor::executeSql(hDbc, listTablesQuery);
-
-    for (const auto &row: tableList) {
-        for (const std::string &cell: row) {
-            std::cout << cell << "\t";
-        }
-        std::cout << std::endl;
-    }
-}
-
 void checkTables(SQLHDBC sqlhdbc) {
-    std::string createTables = "CREATE TABLE IF NOT EXISTS medicines\n"
-                               "(\n"
-                               "    id           SERIAL PRIMARY KEY,\n"
-                               "    name         VARCHAR,\n"
-                               "    manufacturer VARCHAR,\n"
-                               "    price        INTEGER\n"
-                               ");\n"
-                               "\n"
-                               "CREATE TABLE IF NOT EXISTS pharmacies\n"
-                               "(\n"
-                               "    id           SERIAL PRIMARY KEY,\n"
-                               "    name         VARCHAR,\n"
-                               "    address      VARCHAR,\n"
-                               "    phone_number VARCHAR\n"
-                               ");\n"
-                               "\n"
-                               "CREATE TABLE IF NOT EXISTS requests\n"
-                               "(\n"
-                               "    id              SERIAL PRIMARY KEY,\n"
-                               "    creation_date   DATE,\n"
-                               "    completion_date DATE,\n"
-                               "    pharmacy_id     INTEGER,\n"
-                               "\n"
-                               "    FOREIGN KEY (pharmacy_id) REFERENCES pharmacies (id)\n"
-                               ");\n"
-                               "\n"
-                               "CREATE TABLE IF NOT EXISTS medicine_buyings\n"
-                               "(\n"
-                               "    request_id      INTEGER,\n"
-                               "    medicine_id     INTEGER,\n"
-                               "    medicine_number INTEGER,\n"
-                               "\n"
-                               "    PRIMARY KEY (request_id, medicine_id),\n"
-                               "    FOREIGN KEY (request_id) REFERENCES requests (id),\n"
-                               "    FOREIGN KEY (medicine_id) REFERENCES medicines (id)\n"
-                               ");";
+    string createTables = "CREATE TABLE IF NOT EXISTS countries\n"
+                          "(\n"
+                          "    id   SERIAL PRIMARY KEY,\n"
+                          "    name VARCHAR\n"
+                          ");\n"
+                          "\n"
+                          "CREATE TABLE IF NOT EXISTS manufacturers\n"
+                          "(\n"
+                          "    id         SERIAL PRIMARY KEY,\n"
+                          "    name       VARCHAR,\n"
+                          "    country_id INTEGER,\n"
+                          "\n"
+                          "    FOREIGN KEY (country_id) REFERENCES countries (id)\n"
+                          ");\n"
+                          "\n"
+                          "\n"
+                          "CREATE TABLE IF NOT EXISTS medicines\n"
+                          "(\n"
+                          "    id              SERIAL PRIMARY KEY,\n"
+                          "    name            VARCHAR,\n"
+                          "    manufacturer_id INTEGER,\n"
+                          "    price           INTEGER,\n"
+                          "\n"
+                          "    FOREIGN KEY (manufacturer_id) REFERENCES manufacturers (id)\n"
+                          ");\n"
+                          "\n"
+                          "CREATE TABLE IF NOT EXISTS pharmacies\n"
+                          "(\n"
+                          "    id           SERIAL PRIMARY KEY,\n"
+                          "    name         VARCHAR,\n"
+                          "    address      VARCHAR,\n"
+                          "    phone_number VARCHAR\n"
+                          ");\n"
+                          "\n"
+                          "CREATE TABLE IF NOT EXISTS requests\n"
+                          "(\n"
+                          "    id              SERIAL PRIMARY KEY,\n"
+                          "    creation_date   DATE,\n"
+                          "    completion_date DATE,\n"
+                          "    pharmacy_id     INTEGER,\n"
+                          "\n"
+                          "    FOREIGN KEY (pharmacy_id) REFERENCES pharmacies (id)\n"
+                          ");\n"
+                          "\n"
+                          "CREATE TABLE IF NOT EXISTS medicine_buyings\n"
+                          "(\n"
+                          "    request_id      INTEGER,\n"
+                          "    medicine_id     INTEGER,\n"
+                          "    medicine_number INTEGER,\n"
+                          "\n"
+                          "    PRIMARY KEY (request_id, medicine_id),\n"
+                          "    FOREIGN KEY (request_id) REFERENCES requests (id),\n"
+                          "    FOREIGN KEY (medicine_id) REFERENCES medicines (id)\n"
+                          ");";
 
     std::vector<std::vector<std::string>> tableList = SqlExecutor::executeSql(sqlhdbc, createTables);
 }
