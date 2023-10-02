@@ -2,6 +2,7 @@
 #define LAB1_MANUFACTURER_H
 
 #include <string>
+#include <utility>
 #include "../utils/sql_executor.h"
 
 using namespace std;
@@ -9,8 +10,8 @@ using namespace std;
 
 class Manufacturer {
 public:
-    Manufacturer(const string &name, int countryId) :
-            name(name), countryId(countryId) {}
+    Manufacturer(string name, int countryId) :
+            name(std::move(name)), countryId(countryId) {}
 
     void save(SQLHDBC sqlhdbc) {
         ostringstream oss;
@@ -29,6 +30,14 @@ public:
         }
 
         return countries;
+    }
+
+    const string &getName() const {
+        return name;
+    }
+
+    int getCountryId() const {
+        return countryId;
     }
 
 private:

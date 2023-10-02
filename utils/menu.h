@@ -313,6 +313,31 @@ public:
                         vector<Manufacturer> manufacturers = Manufacturer::findAll(hdbc);
 
                         if (!manufacturers.empty()) {
+                            vector<Country> countries;
+                            for (const Manufacturer& manufacturer: manufacturers) {
+                                countries.push_back(Country::findById(hdbc, manufacturer.getCountryId()));
+                            }
+
+                            vector<int> numbers;
+                            for (int i = 0; i < manufacturers.size(); i++) {
+                                numbers.push_back(i + 1);
+                            }
+
+                            vector<string> headers = {"№", "Manufacturer", "Country"};
+
+                            vector<vector<string>> data;
+                            for (int i = 0; i < manufacturers.size(); ++i) {
+                                vector<string> data_i;
+
+                                data_i.push_back(to_string(numbers[i]));
+                                data_i.push_back(manufacturers[i].getName());
+                                data_i.push_back(countries[i].getName());
+
+                                data.push_back(data_i);
+                            }
+
+                            TablePrinter::printTable(headers, data);
+
                             break;
                         }
 
