@@ -8,10 +8,13 @@
 #include <limits>
 #include "../models/pharmacy.h"
 #include "../models/medicine.h"
-#include "table_printer.h"
 #include "../models/date.h"
 #include "../models/request.h"
 #include "../models/medicine_buying.h"
+#include "../models/manufacturer.h"
+#include "table_printer.h"
+#include "../models/country.h"
+
 
 using namespace std;
 
@@ -27,6 +30,8 @@ using namespace std;
 \n\
 7) Add medicine buying\n\
 8) Get medicine buyings list\n\
+\n\
+9) Add manufacturer\n\
 0) Exit\n\
 "
 
@@ -273,6 +278,36 @@ public:
                             cout << "No medicine buyings found." << endl;
                         }
                         break;
+
+                    }
+
+                        //add manufacturer
+                    case 9: {
+                        vector<Country> countries = Country::findAll(hdbc);
+
+                        if (!countries.empty()) {
+                            string name, countryNumber;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select country [1, " << countries.size() << "]:\n>";
+                            getline(cin, countryNumber);
+
+                            cout << "Enter name:\n>";
+                            getline(cin, name);
+
+                            int countryId = countries[stoi(countryNumber) - 1].getId();
+                            Manufacturer manufacturer(name, countryId);
+                            manufacturer.save(hdbc);
+                            break;
+                        }
+
+                        cout << "No countries found. You cannot add a manufacturer\n";
+                        break;
+                    }
+
+                        // get manufacturers list
+                    case 10: {
 
                     }
 
