@@ -58,15 +58,6 @@ public:
         return parseFromVector(results[0]);
     }
 
-    string toString() {
-        ostringstream oss;
-        oss << "{id = " << id <<
-            "; name = " << name <<
-            "; address = " << address <<
-            "; phoneNumber = " << phoneNumber << "}\n";
-        return oss.str();
-    }
-
     string getName() {
         return name;
     }
@@ -75,7 +66,20 @@ public:
         return id;
     }
 
+    const string &getAddress() const {
+        return address;
+    }
+
+    const string &getPhoneNumber() const {
+        return phoneNumber;
+    }
+
 private:
+    int id;
+    string name;
+    string address;
+    string phoneNumber;
+
     Pharmacy() = default;
 
     Pharmacy(int id, string name, string address, string phoneNumber) :
@@ -83,11 +87,6 @@ private:
             name(move(name)),
             address(move(address)),
             phoneNumber(move(phoneNumber)) {}
-
-    int id;
-    string name;
-    string address;
-    string phoneNumber;
 
     static Pharmacy parseFromVector(vector<string> vector) {
         return {stoi(vector[0]), vector[1], vector[2], vector[3]};
