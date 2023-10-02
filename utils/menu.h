@@ -43,6 +43,7 @@ public:
 
     explicit Menu(SQLHDBC hdbc) : hdbc(hdbc) {}
 
+
     void testMenu() {
         bool isWorked = true;
         string command;
@@ -80,22 +81,28 @@ public:
                         vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
 
                         if (!pharmacies.empty()) {
-                            vector<string> headers = {"№", "Name", "Address", "Phone number"};
+                            vector<int> numbers = getNumbersVector(pharmacies.size());
+
+                            vector<string> headers = {"№", "Pharmacy", "Address", "Phone number"};
 
                             vector<vector<string>> data;
 
-                            int i = 1;
-                            for (Pharmacy pharmacy: pharmacies) {
-                                vector<string> tmp = pharmacy.toStringVector();
-                                tmp[0] = to_string(i++);
-                                data.push_back(tmp);
+                            for (int i = 0; i < pharmacies.size(); i++) {
+                                vector<string> data_i;
+
+                                data_i.push_back(to_string(numbers[i]));
+                                data_i.push_back(pharmacies[i].getName());
+                                data_i.push_back(pharmacies[i].getAddress());
+                                data_i.push_back(pharmacies[i].getPhoneNumber());
+
+                                data.push_back(data_i);
                             }
 
                             TablePrinter::printTable(headers, data);
-
-                        } else {
-                            cout << "No pharmacies found." << endl;
+                            break;
                         }
+
+                        cout << "No pharmacies found." << endl;
                         break;
                     }
 
@@ -137,7 +144,7 @@ public:
                         if (!medicines.empty()) {
 
                             vector<Manufacturer> manufacturers;
-                            for (const Medicine& medicine: medicines) {
+                            for (const Medicine &medicine: medicines) {
                                 manufacturers.push_back(Manufacturer::findById(hdbc, medicine.getManufacturerId()));
                             }
 
@@ -381,6 +388,8 @@ public:
     }
 
 private:
+    SQLHDBC hdbc;
+
     static bool isValidCommand(const string &command) {
         return isPositiveValue(string_view(command));
     }
@@ -390,7 +399,14 @@ private:
         return regex_match(s.data(), r);
     }
 
-    SQLHDBC hdbc;
+    static vector<int> getNumbersVector(unsigned long size) {
+        vector<int> numbers;
+        for (int i = 0; i < size; i++) {
+            numbers.push_back(i + 1);
+        }
+        return numbers;
+    }
+
 
 };
 
