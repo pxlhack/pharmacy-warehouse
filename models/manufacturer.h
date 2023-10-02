@@ -40,6 +40,10 @@ public:
         return countryId;
     }
 
+    int getId() const {
+        return id;
+    }
+
 private:
     int id;
     string name;
