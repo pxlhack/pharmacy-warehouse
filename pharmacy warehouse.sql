@@ -11,12 +11,30 @@ CREATE DATABASE pharmacy_warehouse WITH OWNER pharmacy_administrator;
 GRANT CREATE ON DATABASE pharmacy_warehouse TO pharmacy_administrator;
 -- psql -U pharmacy_administrator -d pharmacy_warehouse -h 127.0.0.1 -W;
 
+CREATE TABLE IF NOT EXISTS countries
+(
+    id   SERIAL PRIMARY KEY,
+    name VARCHAR
+);
+
+CREATE TABLE IF NOT EXISTS manufacturers
+(
+    id         SERIAL PRIMARY KEY,
+    name       VARCHAR,
+    country_id INTEGER,
+
+    FOREIGN KEY (country_id) REFERENCES countries (id)
+);
+
+
 CREATE TABLE IF NOT EXISTS medicines
 (
-    id           SERIAL PRIMARY KEY,
-    name         VARCHAR,
-    manufacturer VARCHAR,
-    price        INTEGER
+    id              SERIAL PRIMARY KEY,
+    name            VARCHAR,
+    manufacturer_id INTEGER,
+    price           INTEGER,
+
+    FOREIGN KEY (manufacturer_id) REFERENCES manufacturers (id)
 );
 
 CREATE TABLE IF NOT EXISTS pharmacies
