@@ -5,9 +5,8 @@
 
 class MedicineBuying {
 public:
-    MedicineBuying(int medicineId, int requestId, int medicineNumber) :
-            medicine_id(medicineId),
-            request_id(requestId),
+    MedicineBuying(int requestId, int medicineId, int medicineNumber) :
+            request_id(requestId), medicine_id(medicineId),
             medicine_number(medicineNumber) {}
 
 
@@ -53,8 +52,8 @@ public:
     }
 
 private:
-    int medicine_id;
     int request_id;
+    int medicine_id;
     int medicine_number;
 
     static MedicineBuying parseFromVector(const vector<string> &vector) {
@@ -83,7 +82,8 @@ private:
 
     void checkMedicineBuyingExistence(SQLHDBC sqlhdbc) {
         ostringstream oss;
-        oss << "SELECT 1 FROM medicine_buyings WHERE medicine_id = " << medicine_id << " AND request_id = " << request_id << ";";
+        oss << "SELECT 1 FROM medicine_buyings WHERE medicine_id = " << medicine_id << " AND request_id = "
+            << request_id << ";";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
 
         if (!results.empty() && results[0][0] == "1") {
