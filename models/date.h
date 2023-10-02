@@ -13,8 +13,6 @@ public:
 
     string toString() const {
         ostringstream oss;
-        cout << day << endl;
-        cout << month << endl;
         string dayStr = (day < 10) ? "0" + to_string(day) : to_string(day);
         string monthStr = (month < 10) ? "0" + to_string(month) : to_string(month);
         oss << dayStr << "/" << monthStr << "/" << year;
