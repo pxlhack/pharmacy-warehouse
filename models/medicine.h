@@ -67,6 +67,14 @@ public:
         return id;
     }
 
+    int getManufacturerId() const {
+        return manufacturerId;
+    }
+
+    int getPrice() const {
+        return price;
+    }
+
 private:
     int id;
     string name;
