@@ -217,16 +217,25 @@ public:
                         vector<Request> requests = Request::findAll(hdbc);
 
                         if (!requests.empty()) {
-                            vector<string> headers = {"№", "Creation date", "Completion date", "Pharmacy"};
+                            vector<Pharmacy> pharmacies;
+                            for (Request request: requests) {
+                                pharmacies.push_back(Pharmacy::findById(hdbc, request.getPharmacyId()));
+                            }
 
                             vector<vector<string>> data;
 
-                            int i = 1;
-                            for (Request request: requests) {
-                                vector<string> tmp = request.toStringVector(hdbc);
-                                tmp[0] = to_string(i++);
-                                data.push_back(tmp);
+                            for (int i = 0; i < requests.size(); ++i) {
+                                vector<string> data_i;
+
+                                data_i.push_back(to_string(i + 1));
+                                data_i.push_back(requests[i].getCreationDate().toString());
+                                data_i.push_back(requests[i].getCompletionDate().toString());
+                                data_i.push_back(pharmacies[i].getName());
+
+                                data.push_back(data_i);
                             }
+
+                            vector<string> headers = {"№", "Creation date", "Completion date", "Pharmacy"};
 
                             TablePrinter::printTable(headers, data);
 
