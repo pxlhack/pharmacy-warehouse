@@ -13,7 +13,11 @@ public:
 
     string toString() const {
         ostringstream oss;
-        oss << day << "/" << month << "/" << year;
+        cout << day << endl;
+        cout << month << endl;
+        string dayStr = (day < 10) ? "0" + to_string(day) : to_string(day);
+        string monthStr = (month < 10) ? "0" + to_string(month) : to_string(month);
+        oss << dayStr << "/" << monthStr << "/" << year;
         return oss.str();
     }
 
@@ -26,9 +30,9 @@ public:
     }
 
     static Date parseFromStringFromDB(const string &str) {
-        int day = stoi(str.substr(0, 4));
+        int year = stoi(str.substr(0, 4));
         int month = stoi(str.substr(5, 2));
-        int year = stoi(str.substr(8, 2));
+        int day = stoi(str.substr(8, 2));
 
         return {day, month, year};
     }
