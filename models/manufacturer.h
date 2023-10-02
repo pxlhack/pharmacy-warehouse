@@ -17,10 +17,33 @@ public:
         oss << "INSERT INTO manufacturers(name, country_id) VALUES('" << name << "', " << countryId << ");";
         SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
+
+
+    static vector<Manufacturer> findAll(SQLHDBC sqlhdbc) {
+        string selectSql = "SELECT * FROM manufacturers;";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, selectSql);
+
+        vector<Manufacturer> countries;
+        for (const vector<string> &row: results) {
+            countries.push_back(parseFromVector(row));
+        }
+
+        return countries;
+    }
+
 private:
     int id;
     string name;
     int countryId;
+
+    Manufacturer(int id, string name, int countryId) :
+            id(id), name(std::move(name)), countryId(countryId) {}
+
+
+    static Manufacturer parseFromVector(const vector<string> &vector) {
+        return {stoi(vector[0]), vector[1], stoi(vector[2])};
+    }
+
 };
 
 

@@ -32,6 +32,8 @@ using namespace std;
 8) Get medicine buyings list\n\
 \n\
 9) Add manufacturer\n\
+10) Get manufacturers list\n\
+\n\
 0) Exit\n\
 "
 
@@ -308,7 +310,14 @@ public:
 
                         // get manufacturers list
                     case 10: {
+                        vector<Manufacturer> manufacturers = Manufacturer::findAll(hdbc);
 
+                        if (!manufacturers.empty()) {
+                            break;
+                        }
+
+                        cout << "No manufacturers found. You can add a manufacturer\n";
+                        break;
                     }
 
                     case 0: {
