@@ -279,12 +279,12 @@ public:
                                 break;
                             }
 
-                            cout << "No requests found. You cannot add a medicineBuying\n";
+                            cout << "No requests found. You cannot add a medicine buying\n";
 
                             break;
                         }
 
-                        cout << "No medicines found. You cannot add a medicineBuying\n";
+                        cout << "No medicines found. You cannot add a medicine buying\n";
 
                         break;
                     }
@@ -310,10 +310,6 @@ public:
                                 pharmacies.push_back(pharmacy);
                             }
 
-                            vector<int> numbers;
-                            for (int i = 0; i < medicineBuyings.size(); i++) {
-                                numbers.push_back(i + 1);
-                            }
 
                             vector<string> headers = {"№", "Medicine", "Pharmacy", "Medicine number"};
 
@@ -321,7 +317,7 @@ public:
                             for (int i = 0; i < medicineBuyings.size(); ++i) {
                                 vector<string> data_i;
 
-                                data_i.push_back(to_string(numbers[i]));
+                                data_i.push_back(to_string(i + 1));
                                 data_i.push_back(medicines[i].getName());
                                 data_i.push_back(pharmacies[i].getName());
                                 data_i.push_back(to_string(medicineBuyings[i].getMedicineNumber()));
@@ -376,10 +372,6 @@ public:
                                 countries.push_back(Country::findById(hdbc, manufacturer.getCountryId()));
                             }
 
-                            vector<int> numbers;
-                            for (int i = 0; i < manufacturers.size(); i++) {
-                                numbers.push_back(i + 1);
-                            }
 
                             vector<string> headers = {"№", "Manufacturer", "Country"};
 
@@ -387,7 +379,7 @@ public:
                             for (int i = 0; i < manufacturers.size(); ++i) {
                                 vector<string> data_i;
 
-                                data_i.push_back(to_string(numbers[i]));
+                                data_i.push_back(to_string(i + 1));
                                 data_i.push_back(manufacturers[i].getName());
                                 data_i.push_back(countries[i].getName());
 
