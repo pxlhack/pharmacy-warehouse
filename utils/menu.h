@@ -177,33 +177,39 @@ public:
                     }
 
                     case 5: {
-                        string creationDateString, completionDateString, pharmacyNumber;
-
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-                        cout << "Enter pharmacy number:\n>";
-                        getline(cin, pharmacyNumber);
-
-                        cout << "Enter creation date in format dd/mm/yyyy:\n>";
-                        getline(cin, creationDateString);
-
-                        cout << "Enter completion date in format dd/mm/yyyy:\n>";
-                        getline(cin, completionDateString);
-
                         vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
 
-                        Date creationDate = Date::parseFromString(creationDateString);
-                        Date completionDate = Date::parseFromString(completionDateString);
+                        if (!pharmacies.empty()) {
+                            string creationDateString, completionDateString, pharmacyNumber;
 
-                        int pharmacyId = pharmacies[stoi(pharmacyNumber) - 1].getId();
-                        Request request(creationDate, completionDate, pharmacyId);
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-                        try {
-                            request.save(hdbc);
+                            cout << "Select pharmacy [1, " << pharmacies.size() << "]:\n>";
+                            getline(cin, pharmacyNumber);
+
+                            cout << "Enter creation date in format dd/mm/yyyy:\n>";
+                            getline(cin, creationDateString);
+
+                            cout << "Enter completion date in format dd/mm/yyyy:\n>";
+                            getline(cin, completionDateString);
+
+                            Date creationDate = Date::parseFromString(creationDateString);
+                            Date completionDate = Date::parseFromString(completionDateString);
+
+                            int pharmacyId = pharmacies[stoi(pharmacyNumber) - 1].getId();
+                            Request request(creationDate, completionDate, pharmacyId);
+
+                            try {
+                                request.save(hdbc);
+                            }
+                            catch (const runtime_error &e) {
+                                cout << "Error: " << e.what() << endl;
+                            }
+
+                            break;
                         }
-                        catch (const runtime_error &e) {
-                            cout << "Error: " << e.what() << endl;
-                        }
+
+                        cout << "No pharmacies found. You cannot add a request\n";
 
                         break;
                     }
