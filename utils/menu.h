@@ -81,20 +81,20 @@ public:
 
                         if (!pharmacies.empty()) {
 
-                            vector<string> headers = {"№", "Pharmacy", "Address", "Phone number"};
-
                             vector<vector<string>> data;
 
                             for (int i = 0; i < pharmacies.size(); i++) {
-                                vector<string> data_i;
-
-                                data_i.push_back(to_string(i + 1));
-                                data_i.push_back(pharmacies[i].getName());
-                                data_i.push_back(pharmacies[i].getAddress());
-                                data_i.push_back(pharmacies[i].getPhoneNumber());
-
-                                data.push_back(data_i);
+                                data.push_back(
+                                        {
+                                                to_string(i + 1),
+                                                pharmacies[i].getName(),
+                                                pharmacies[i].getAddress(),
+                                                pharmacies[i].getPhoneNumber()
+                                        }
+                                );
                             }
+
+                            vector<string> headers = {"№", "Pharmacy", "Address", "Phone number"};
 
                             TablePrinter::printTable(headers, data);
 
@@ -149,21 +149,20 @@ public:
                                 manufacturers.push_back(Manufacturer::findById(hdbc, medicine.getManufacturerId()));
                             }
 
-
-                            vector<string> headers = {"№", "Medicine", "Manufacturer", "Price"};
-
                             vector<vector<string>> data;
 
                             for (int i = 0; i < medicines.size(); ++i) {
-                                vector<string> data_i;
-
-                                data_i.push_back(to_string(i + 1));
-                                data_i.push_back(medicines[i].getName());
-                                data_i.push_back(manufacturers[i].getName());
-                                data_i.push_back(to_string(medicines[i].getPrice()));
-
-                                data.push_back(data_i);
+                                data.push_back(
+                                        {
+                                                to_string(i + 1),
+                                                medicines[i].getName(),
+                                                manufacturers[i].getName(),
+                                                to_string(medicines[i].getPrice())
+                                        }
+                                );
                             }
+
+                            vector<string> headers = {"№", "Medicine", "Manufacturer", "Price"};
 
                             TablePrinter::printTable(headers, data);
 
@@ -223,14 +222,14 @@ public:
                             vector<vector<string>> data;
 
                             for (int i = 0; i < requests.size(); ++i) {
-                                vector<string> data_i;
-
-                                data_i.push_back(to_string(i + 1));
-                                data_i.push_back(requests[i].getCreationDate().toString());
-                                data_i.push_back(requests[i].getCompletionDate().toString());
-                                data_i.push_back(pharmacies[i].getName());
-
-                                data.push_back(data_i);
+                                data.push_back(
+                                        {
+                                                to_string(i + 1),
+                                                requests[i].getCreationDate().toString(),
+                                                requests[i].getCompletionDate().toString(),
+                                                pharmacies[i].getName()
+                                        }
+                                );
                             }
 
                             vector<string> headers = {"№", "Creation date", "Completion date", "Pharmacy"};
@@ -310,20 +309,20 @@ public:
                                 pharmacies.push_back(pharmacy);
                             }
 
-
-                            vector<string> headers = {"№", "Medicine", "Pharmacy", "Medicine number"};
-
                             vector<vector<string>> data;
                             for (int i = 0; i < medicineBuyings.size(); ++i) {
-                                vector<string> data_i;
+                                data.push_back(
+                                        {
+                                                to_string(i + 1),
+                                                medicines[i].getName(),
+                                                pharmacies[i].getName(),
+                                                to_string(medicineBuyings[i].getMedicineNumber())
 
-                                data_i.push_back(to_string(i + 1));
-                                data_i.push_back(medicines[i].getName());
-                                data_i.push_back(pharmacies[i].getName());
-                                data_i.push_back(to_string(medicineBuyings[i].getMedicineNumber()));
-
-                                data.push_back(data_i);
+                                        }
+                                );
                             }
+
+                            vector<string> headers = {"№", "Medicine", "Pharmacy", "Medicine number"};
 
                             TablePrinter::printTable(headers, data);
 
@@ -351,6 +350,7 @@ public:
                             getline(cin, name);
 
                             int countryId = countries[stoi(countryNumber) - 1].getId();
+
                             Manufacturer manufacturer(name, countryId);
                             manufacturer.save(hdbc);
 
@@ -372,19 +372,18 @@ public:
                                 countries.push_back(Country::findById(hdbc, manufacturer.getCountryId()));
                             }
 
-
-                            vector<string> headers = {"№", "Manufacturer", "Country"};
-
                             vector<vector<string>> data;
                             for (int i = 0; i < manufacturers.size(); ++i) {
-                                vector<string> data_i;
-
-                                data_i.push_back(to_string(i + 1));
-                                data_i.push_back(manufacturers[i].getName());
-                                data_i.push_back(countries[i].getName());
-
-                                data.push_back(data_i);
+                                data.push_back(
+                                        {
+                                                to_string(i + 1),
+                                                manufacturers[i].getName(),
+                                                countries[i].getName()
+                                        }
+                                );
                             }
+
+                            vector<string> headers = {"№", "Manufacturer", "Country"};
 
                             TablePrinter::printTable(headers, data);
 
