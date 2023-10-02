@@ -71,7 +71,6 @@ public:
                         cout << "Enter phone number:\n>";
                         getline(cin, phoneNumber);
 
-
                         Pharmacy pharmacy(name, address, phoneNumber);
                         pharmacy.save(hdbc);
 
@@ -99,10 +98,12 @@ public:
                             }
 
                             TablePrinter::printTable(headers, data);
+
                             break;
                         }
 
                         cout << "No pharmacies found." << endl;
+
                         break;
                     }
 
@@ -132,26 +133,24 @@ public:
                             catch (const runtime_error &e) {
                                 cout << "Error: " << e.what() << endl;
                             }
+
                             break;
                         }
 
                         cout << "No manufacturers found. You cannot add a medicine\n";
+
                         break;
                     }
                     case 4: {
                         vector<Medicine> medicines = Medicine::findAll(hdbc);
 
                         if (!medicines.empty()) {
-
                             vector<Manufacturer> manufacturers;
                             for (const Medicine &medicine: medicines) {
                                 manufacturers.push_back(Manufacturer::findById(hdbc, medicine.getManufacturerId()));
                             }
 
-                            vector<int> numbers;
-                            for (int i = 0; i < medicines.size(); i++) {
-                                numbers.push_back(i + 1);
-                            }
+                            vector<int> numbers = getNumbersVector(medicines.size());
 
                             vector<string> headers = {"№", "Medicine", "Manufacturer", "Price"};
 
@@ -159,6 +158,7 @@ public:
 
                             for (int i = 0; i < medicines.size(); ++i) {
                                 vector<string> data_i;
+
                                 data_i.push_back(to_string(numbers[i]));
                                 data_i.push_back(medicines[i].getName());
                                 data_i.push_back(manufacturers[i].getName());
@@ -168,6 +168,7 @@ public:
                             }
 
                             TablePrinter::printTable(headers, data);
+
                             break;
                         }
 
@@ -223,9 +224,11 @@ public:
 
                             TablePrinter::printTable(headers, data);
 
-                        } else {
-                            cout << "No requests found." << endl;
+                            break;
                         }
+
+                        cout << "No requests found." << endl;
+
                         break;
                     }
 
@@ -303,11 +306,13 @@ public:
                             }
 
                             TablePrinter::printTable(headers, data);
-                        } else {
-                            cout << "No medicine buyings found." << endl;
-                        }
-                        break;
 
+                            break;
+                        }
+
+                        cout << "No medicine buyings found." << endl;
+
+                        break;
                     }
 
                         //add manufacturer
@@ -328,10 +333,12 @@ public:
                             int countryId = countries[stoi(countryNumber) - 1].getId();
                             Manufacturer manufacturer(name, countryId);
                             manufacturer.save(hdbc);
+
                             break;
                         }
 
                         cout << "No countries found. You cannot add a manufacturer\n";
+
                         break;
                     }
 
@@ -369,16 +376,19 @@ public:
                         }
 
                         cout << "No manufacturers found. You can add a manufacturer\n";
+
                         break;
                     }
 
                     case 0: {
                         isWorked = false;
+
                         break;
                     }
 
                     default: {
                         cout << "Error" << endl;
+
                         break;
                     }
                 }
