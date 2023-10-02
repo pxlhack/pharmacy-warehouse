@@ -80,7 +80,6 @@ public:
                         vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
 
                         if (!pharmacies.empty()) {
-                            vector<int> numbers = getNumbersVector(pharmacies.size());
 
                             vector<string> headers = {"№", "Pharmacy", "Address", "Phone number"};
 
@@ -89,7 +88,7 @@ public:
                             for (int i = 0; i < pharmacies.size(); i++) {
                                 vector<string> data_i;
 
-                                data_i.push_back(to_string(numbers[i]));
+                                data_i.push_back(to_string(i + 1));
                                 data_i.push_back(pharmacies[i].getName());
                                 data_i.push_back(pharmacies[i].getAddress());
                                 data_i.push_back(pharmacies[i].getPhoneNumber());
@@ -150,7 +149,6 @@ public:
                                 manufacturers.push_back(Manufacturer::findById(hdbc, medicine.getManufacturerId()));
                             }
 
-                            vector<int> numbers = getNumbersVector(medicines.size());
 
                             vector<string> headers = {"№", "Medicine", "Manufacturer", "Price"};
 
@@ -159,7 +157,7 @@ public:
                             for (int i = 0; i < medicines.size(); ++i) {
                                 vector<string> data_i;
 
-                                data_i.push_back(to_string(numbers[i]));
+                                data_i.push_back(to_string(i + 1));
                                 data_i.push_back(medicines[i].getName());
                                 data_i.push_back(manufacturers[i].getName());
                                 data_i.push_back(to_string(medicines[i].getPrice()));
@@ -422,14 +420,6 @@ private:
     static bool isPositiveValue(string_view s) {
         static const regex r(R"(\d{1,})");
         return regex_match(s.data(), r);
-    }
-
-    static vector<int> getNumbersVector(unsigned long size) {
-        vector<int> numbers;
-        for (int i = 0; i < size; i++) {
-            numbers.push_back(i + 1);
-        }
-        return numbers;
     }
 
 
