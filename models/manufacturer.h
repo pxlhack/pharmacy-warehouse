@@ -32,6 +32,18 @@ public:
         return countries;
     }
 
+    static Manufacturer findById(SQLHDBC sqlhdbc, int id) {
+        ostringstream oss;
+        oss << "SELECT * FROM manufacturers WHERE id = " << id << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+
+        if (results.empty()) {
+            throw runtime_error("Request not found");
+        }
+
+        return parseFromVector(results[0]);
+    }
+
     const string &getName() const {
         return name;
     }
