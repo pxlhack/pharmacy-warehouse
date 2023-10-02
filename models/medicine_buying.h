@@ -15,6 +15,7 @@ public:
         try {
             checkMedicineExistence(sqlhdbc);
             checkRequestExistence(sqlhdbc);
+            checkMedicineBuyingExistence(sqlhdbc);
         }
         catch (const runtime_error &e) {
             throw;
@@ -27,7 +28,7 @@ public:
     }
 
 
-    static vector<MedicineBuying> findAll(SQLHDBC sqlhdbc){
+    static vector<MedicineBuying> findAll(SQLHDBC sqlhdbc) {
         string selectSql = "SELECT * FROM medicine_buyings;";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, selectSql);
 
@@ -77,6 +78,16 @@ private:
 
         if (results.empty() || results[0][0] != "1") {
             throw runtime_error("Request not found");
+        }
+    }
+
+    void checkMedicineBuyingExistence(SQLHDBC sqlhdbc) {
+        ostringstream oss;
+        oss << "SELECT 1 FROM medicine_buyings WHERE medicine_id = " << medicine_id << " AND request_id = " << request_id << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+
+        if (!results.empty() && results[0][0] == "1") {
+            throw runtime_error("Medicine buying already exists");
         }
     }
 
