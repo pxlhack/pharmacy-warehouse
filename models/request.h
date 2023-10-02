@@ -85,6 +85,14 @@ public:
         return id;
     }
 
+    const Date &getCreationDate() const {
+        return creationDate;
+    }
+
+    const Date &getCompletionDate() const {
+        return completionDate;
+    }
+
 
 private:
     int id;
