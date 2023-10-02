@@ -246,34 +246,45 @@ public:
                     }
 
                     case 7: {
-                        string medicineString, requestString, medicineNumberString;
-
-
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-                        cout << "Enter medicine :\n>";
-                        getline(cin, medicineString);
-
-                        cout << "Enter request:\n>";
-                        getline(cin, requestString);
-
-                        cout << "Enter medicine number:\n>";
-                        getline(cin, medicineNumberString);
-
                         vector<Medicine> medicines = Medicine::findAll(hdbc);
-                        int medicineId = medicines[stoi(medicineString) - 1].getId();
 
-                        vector<Request> requests = Request::findAll(hdbc);
-                        int requestId = requests[stoi(requestString) - 1].getId();
+                        if (!medicines.empty()) {
+                            vector<Request> requests = Request::findAll(hdbc);
 
-                        MedicineBuying medicineBuying(medicineId, requestId, stoi(medicineNumberString));
+                            if (!requests.empty()) {
+                                string medicineString, requestString, medicineNumberString;
 
-                        try {
-                            medicineBuying.save(hdbc);
+                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                                cout << "Select medicine [1, " << medicines.size() << "]:\n>";
+                                getline(cin, medicineString);
+
+                                cout << "Select request [1, " << requests.size() << "]:\n>";
+                                getline(cin, requestString);
+
+                                cout << "Enter medicine number:\n>";
+                                getline(cin, medicineNumberString);
+
+                                int medicineId = medicines[stoi(medicineString) - 1].getId();
+                                int requestId = requests[stoi(requestString) - 1].getId();
+
+                                MedicineBuying medicineBuying(medicineId, requestId, stoi(medicineNumberString));
+
+                                try {
+                                    medicineBuying.save(hdbc);
+                                }
+                                catch (const runtime_error &e) {
+                                    cout << "Error: " << e.what() << endl;
+                                }
+                                break;
+                            }
+
+                            cout << "No requests found. You cannot add a medicineBuying\n";
+
+                            break;
                         }
-                        catch (const runtime_error &e) {
-                            cout << "Error: " << e.what() << endl;
-                        }
+
+                        cout << "No medicines found. You cannot add a medicineBuying\n";
 
                         break;
                     }
