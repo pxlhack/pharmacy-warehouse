@@ -100,26 +100,35 @@ public:
                     }
 
                     case 3: {
-                        string name, manufacturer, price;
+                        vector<Manufacturer> manufacturers = Manufacturer::findAll(hdbc);
 
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        if (!manufacturers.empty()) {
+                            string name, manufacturerNumber, price;
 
-                        cout << "Enter name:\n>";
-                        getline(cin, name);
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-                        cout << "Enter manufacturer:\n>";
-                        getline(cin, manufacturer);
+                            cout << "Enter name:\n>";
+                            getline(cin, name);
 
-                        cout << "Enter price:\n>";
-                        getline(cin, price);
+                            cout << "Select manufacturer [1, " << manufacturers.size() << "]:\n>";
+                            getline(cin, manufacturerNumber);
 
+                            cout << "Enter price:\n>";
+                            getline(cin, price);
 
-                        Medicine medicine(name, manufacturer, stoi(price));
+                            int manufacturerId = manufacturers[stoi(manufacturerNumber) - 1].getId();
+                            Medicine medicine(name, manufacturerId, stoi(price));
 
-                        int id = medicine.save(hdbc);
+                            try {
+                                medicine.save(hdbc);
+                            }
+                            catch (const runtime_error &e) {
+                                cout << "Error: " << e.what() << endl;
+                            }
+                            break;
+                        }
 
-                        cout << "Medicine with id=" << id << " created\n";
-
+                        cout << "No manufacturers found. You cannot add a medicine\n";
                         break;
                     }
                     case 4: {

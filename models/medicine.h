@@ -10,22 +10,24 @@ using namespace std;
 class Medicine {
 
 public:
-    Medicine(string name, string manufacturer, int price) :
-            name(std::move(name)),
-            manufacturer(std::move(manufacturer)),
+    Medicine(string name, int manufacturerId, int price) :
+            name(std::move(name)), manufacturerId(manufacturerId),
             price(price) {}
 
-    int save(SQLHDBC sqlhdbc) {
+    void save(SQLHDBC sqlhdbc) {
+        try {
+            checkManufacturerExistence(sqlhdbc);
+        }
+        catch (const runtime_error &e) {
+            throw;
+        }
         ostringstream oss;
-        oss << "INSERT INTO medicines(name, manufacturer, price) VALUES ('"
-            << name << "', '" << manufacturer << "', '" << price << "') RETURNING id;";
+        oss << "INSERT INTO medicines(name, manufacturer_id, price) VALUES ('"
+            << name << "', " << manufacturerId << ", '" << price << "') RETURNING id;";
 
         string insertSql = oss.str();
 
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, insertSql);
-        this->id = stoi(results[0][0]);
-
-        return this->id;
     }
 
     static vector<Medicine> findAll(SQLHDBC sqlhdbc) {
@@ -41,7 +43,7 @@ public:
     }
 
     vector<string> toStringVector() {
-        return {to_string(this->id), this->name, this->manufacturer, to_string(this->price)};
+        return {to_string(this->id), this->name, to_string(this->manufacturerId), to_string(this->price)};
     }
 
     static Medicine findById(SQLHDBC sqlhdbc, int id) {
@@ -60,14 +62,6 @@ public:
         return name;
     }
 
-    string toString() {
-        ostringstream oss;
-        oss << "{id = " << id <<
-            "; name = " << name <<
-            "; manufacturer = " << manufacturer <<
-            "; price = " << price << "}\n";
-        return oss.str();
-    }
 
     int getId() const {
         return id;
@@ -76,21 +70,30 @@ public:
 private:
     int id;
     string name;
-    string manufacturer;
+    int manufacturerId;
     int price;
 
-public:
-    Medicine(int id, string name, string manufacturer, int price) :
+    Medicine(int id, string name, int manufacturerId, int price) :
             id(id), name(std::move(name)),
-            manufacturer(std::move(manufacturer)),
+            manufacturerId(manufacturerId),
             price(price) {}
 
-private:
 
     static Medicine parseFromVector(vector<string> vector) {
-        Medicine medicine(stoi(vector[0]), vector[1], vector[2], stoi(vector[3]));
+        Medicine medicine(stoi(vector[0]), vector[1], stoi(vector[2]), stoi(vector[3]));
         return medicine;
     }
+
+    void checkManufacturerExistence(SQLHDBC sqlhdbc) {
+        ostringstream oss;
+        oss << "SELECT 1 FROM manufacturers WHERE id = " << manufacturerId << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+
+        if (results.empty() || results[0][0] != "1") {
+            throw runtime_error("Manufacturer not found");
+        }
+    }
+
 };
 
 
