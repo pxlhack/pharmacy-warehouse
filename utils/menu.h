@@ -30,9 +30,10 @@ using namespace std;
 \n\
 7) Add medicine buying\n\
 8) Get medicine buyings list\n\
+8) Delete medicine buyings list\n\
 \n\
-9) Add manufacturer\n\
-10) Get manufacturers list\n\
+10) Add manufacturer\n\
+11) Get manufacturers list\n\
 \n\
 0) Exit\n\
 "
@@ -267,7 +268,7 @@ public:
                                 int medicineId = medicines[stoi(medicineString) - 1].getId();
                                 int requestId = requests[stoi(requestString) - 1].getId();
 
-                                MedicineBuying medicineBuying(medicineId, requestId, stoi(medicineNumberString));
+                                MedicineBuying medicineBuying(requestId, medicineId, stoi(medicineNumberString));
 
                                 try {
                                     medicineBuying.save(hdbc);
@@ -333,9 +334,29 @@ public:
 
                         break;
                     }
+                    case 9: {
+                        vector<MedicineBuying> medicineBuyings = MedicineBuying::findAll(hdbc);
+
+                        if (!medicineBuyings.empty()) {
+                            string medicineBuyingString;
+
+                            cout << "Select medicine buying [1, " << medicineBuyings.size() << "]:\n>";
+                            getline(cin, medicineBuyingString);
+
+                            int requestId = medicineBuyings[stoi(medicineBuyingString) - 1].getRequestId();
+                            int medicineId = medicineBuyings[stoi(medicineBuyingString) - 1].getMedicineId();
+
+                            Medicine::deleteByRequestIdAndMedicineId(hdbc, requestId, medicineId);
+
+                        }
+
+                        cout << "No medicine buyings found." << endl;
+
+                        break;
+                    }
 
                         //add manufacturer
-                    case 9: {
+                    case 10: {
                         vector<Country> countries = Country::findAll(hdbc);
 
                         if (!countries.empty()) {
@@ -363,7 +384,7 @@ public:
                     }
 
                         // get manufacturers list
-                    case 10: {
+                    case 11: {
                         vector<Manufacturer> manufacturers = Manufacturer::findAll(hdbc);
 
                         if (!manufacturers.empty()) {
@@ -394,6 +415,7 @@ public:
 
                         break;
                     }
+
 
                     case 0: {
                         isWorked = false;
