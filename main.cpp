@@ -56,13 +56,13 @@ void checkTables(SQLHDBC sqlhdbc) {
                           "\n"
                           "CREATE TABLE IF NOT EXISTS medicine_buyings\n"
                           "(\n"
-                          "    request_id      INTEGER,\n"
-                          "    medicine_id     INTEGER,\n"
-                          "    medicine_number INTEGER,\n"
+                          "    requestId      INTEGER,\n"
+                          "    medicineId     INTEGER,\n"
+                          "    medicineNumber INTEGER,\n"
                           "\n"
-                          "    PRIMARY KEY (request_id, medicine_id),\n"
-                          "    FOREIGN KEY (request_id) REFERENCES requests (id),\n"
-                          "    FOREIGN KEY (medicine_id) REFERENCES medicines (id)\n"
+                          "    PRIMARY KEY (requestId, medicineId),\n"
+                          "    FOREIGN KEY (requestId) REFERENCES requests (id),\n"
+                          "    FOREIGN KEY (medicineId) REFERENCES medicines (id)\n"
                           ");";
 
     std::vector<std::vector<std::string>> tableList = SqlExecutor::executeSql(sqlhdbc, createTables);
