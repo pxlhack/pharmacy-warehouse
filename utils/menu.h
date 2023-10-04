@@ -346,7 +346,7 @@ public:
                             int requestId = medicineBuyings[stoi(medicineBuyingString) - 1].getRequestId();
                             int medicineId = medicineBuyings[stoi(medicineBuyingString) - 1].getMedicineId();
 
-                            Medicine::deleteByRequestIdAndMedicineId(hdbc, requestId, medicineId);
+                            MedicineBuying::deleteByRequestIdAndMedicineId(hdbc, requestId, medicineId);
 
                         }
 

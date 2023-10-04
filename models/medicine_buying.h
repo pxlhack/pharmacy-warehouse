@@ -6,8 +6,8 @@
 class MedicineBuying {
 public:
     MedicineBuying(int requestId, int medicineId, int medicineNumber) :
-            request_id(requestId), medicine_id(medicineId),
-            medicine_number(medicineNumber) {}
+            requestId(requestId), medicineId(medicineId),
+            medicineNumber(medicineNumber) {}
 
 
     void save(SQLHDBC sqlhdbc) {
@@ -21,8 +21,8 @@ public:
         }
 
         ostringstream oss;
-        oss << "INSERT INTO medicine_buyings(medicine_id, request_id, medicine_number) VALUES ("
-            << medicine_id << ", " << request_id << ", " << medicine_number << ");";
+        oss << "INSERT INTO medicine_buyings(medicineId, requestId, medicineNumber) VALUES ("
+            << medicineId << ", " << requestId << ", " << medicineNumber << ");";
         SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
 
@@ -40,21 +40,33 @@ public:
     }
 
     int getMedicineId() const {
-        return medicine_id;
+        return medicineId;
     }
 
     int getRequestId() const {
-        return request_id;
+        return requestId;
     }
 
     int getMedicineNumber() const {
-        return medicine_number;
+        return medicineNumber;
+    }
+
+
+    static void deleteByRequestIdAndMedicineId(SQLHDBC sqlhdbc, int requestId, int medicineId) {
+        ostringstream oss;
+        oss << "SELECT 1 FROM medicine_buyings WHERE request_id = " << requestId << " AND medicine_id = "
+            << medicineId << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+
+        if (!results.empty() && results[0][0] == "1") {
+            throw runtime_error("Medicine buying already exists");
+        }
     }
 
 private:
-    int request_id;
-    int medicine_id;
-    int medicine_number;
+    int requestId;
+    int medicineId;
+    int medicineNumber;
 
     static MedicineBuying parseFromVector(const vector<string> &vector) {
         return {stoi(vector[0]), stoi(vector[1]), stoi(vector[2])};
@@ -62,7 +74,7 @@ private:
 
     void checkMedicineExistence(SQLHDBC sqlhdbc) {
         ostringstream oss;
-        oss << "SELECT 1 FROM medicines WHERE id = " << medicine_id << ";";
+        oss << "SELECT 1 FROM medicines WHERE id = " << medicineId << ";";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
 
         if (results.empty() || results[0][0] != "1") {
@@ -72,7 +84,7 @@ private:
 
     void checkRequestExistence(SQLHDBC sqlhdbc) {
         ostringstream oss;
-        oss << "SELECT 1 FROM requests WHERE id = " << request_id << ";";
+        oss << "SELECT 1 FROM requests WHERE id = " << requestId << ";";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
 
         if (results.empty() || results[0][0] != "1") {
@@ -82,8 +94,8 @@ private:
 
     void checkMedicineBuyingExistence(SQLHDBC sqlhdbc) {
         ostringstream oss;
-        oss << "SELECT 1 FROM medicine_buyings WHERE medicine_id = " << medicine_id << " AND request_id = "
-            << request_id << ";";
+        oss << "SELECT 1 FROM medicine_buyings WHERE medicineId = " << medicineId << " AND requestId = "
+            << requestId << ";";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
 
         if (!results.empty() && results[0][0] == "1") {
