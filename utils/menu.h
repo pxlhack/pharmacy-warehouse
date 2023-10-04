@@ -186,7 +186,8 @@ public:
                         break;
                     }
 
-                    case 44: {
+                        //add medicine
+                    case 5: {
                         vector<Manufacturer> manufacturers = Manufacturer::findAll(hdbc);
 
                         if (!manufacturers.empty()) {
@@ -220,7 +221,9 @@ public:
 
                         break;
                     }
-                    case 5: {
+
+                        //get medicines list
+                    case 6: {
                         vector<Medicine> medicines = Medicine::findAll(hdbc);
 
                         if (!medicines.empty()) {
@@ -253,7 +256,8 @@ public:
                         break;
                     }
 
-                    case 6: {
+
+                    case 65: {
                         vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
 
                         if (!pharmacies.empty()) {
