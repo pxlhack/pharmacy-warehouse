@@ -74,6 +74,29 @@ public:
         return phoneNumber;
     }
 
+    void setName(const string &name) {
+        Pharmacy::name = name;
+    }
+
+    void setAddress(const string &address) {
+        Pharmacy::address = address;
+    }
+
+    void setPhoneNumber(const string &phoneNumber) {
+        Pharmacy::phoneNumber = phoneNumber;
+    }
+
+    void update(SQLHDBC sqlhdbc) {
+        ostringstream oss;
+        oss << "UPDATE pharmacies "
+               "SET name = '" << name << "', " <<
+            "address = '" << address << "', " <<
+            "phone_number = '" << phoneNumber <<
+            "' WHERE id = " << id << ";";
+
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
+    }
+
 private:
     int id;
     string name;
