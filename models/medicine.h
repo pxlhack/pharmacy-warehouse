@@ -58,9 +58,6 @@ public:
         return parseFromVector(results[0]);
     }
 
-    static void deleteByRequestIdAndMedicineId(SQLHDBC sqlhdbc, int requestId, int medicineId) {
-
-    }
 
     const string &getName() const {
         return name;
