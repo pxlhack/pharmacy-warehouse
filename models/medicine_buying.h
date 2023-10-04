@@ -14,15 +14,15 @@ public:
         try {
             checkMedicineExistence(sqlhdbc);
             checkRequestExistence(sqlhdbc);
-            checkMedicineBuyingExistence(sqlhdbc);
+            checkMedicineBuyingExistence(sqlhdbc, requestId, medicineId);
         }
         catch (const runtime_error &e) {
             throw;
         }
 
         ostringstream oss;
-        oss << "INSERT INTO medicine_buyings(medicineId, requestId, medicineNumber) VALUES ("
-            << medicineId << ", " << requestId << ", " << medicineNumber << ");";
+        oss << "INSERT INTO medicine_buyings(request_id, medicine_id, medicine_number) VALUES ("
+            << requestId << ", " << medicineId << ", " << medicineNumber << ");";
         SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
 
@@ -53,13 +53,14 @@ public:
 
 
     static void deleteByRequestIdAndMedicineId(SQLHDBC sqlhdbc, int requestId, int medicineId) {
-        ostringstream oss;
-        oss << "SELECT 1 FROM medicine_buyings WHERE request_id = " << requestId << " AND medicine_id = "
-            << medicineId << ";";
-        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
-
-        if (!results.empty() && results[0][0] == "1") {
-            throw runtime_error("Medicine buying already exists");
+        if (isMedicineBuyingExists(sqlhdbc, requestId, medicineId)) {
+            ostringstream oss;
+            oss << "DELETE FROM medicine_buyings "
+                   "WHERE request_id = " << requestId <<
+                " AND medicine_id =" << medicineId << ";";
+            vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+        } else {
+            throw runtime_error("Medicine buying not found");
         }
     }
 
@@ -92,16 +93,23 @@ private:
         }
     }
 
-    void checkMedicineBuyingExistence(SQLHDBC sqlhdbc) {
+    static bool isMedicineBuyingExists(SQLHDBC sqlhdbc, int requestId, int medicineId) {
         ostringstream oss;
-        oss << "SELECT 1 FROM medicine_buyings WHERE medicineId = " << medicineId << " AND requestId = "
-            << requestId << ";";
+        oss << "SELECT 1 FROM medicine_buyings WHERE request_id = " << requestId << " AND medicine_id = "
+            << medicineId << ";";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
 
         if (!results.empty() && results[0][0] == "1") {
-            throw runtime_error("Medicine buying already exists");
+            return true;
         }
+        return false;
     }
+
+    static void checkMedicineBuyingExistence(SQLHDBC sqlhdbc, int requestId, int medicineId) {
+        if (isMedicineBuyingExists(sqlhdbc, requestId, medicineId))
+            throw runtime_error("Medicine buying already exists");
+    }
+
 
 };
 
