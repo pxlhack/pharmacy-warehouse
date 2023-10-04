@@ -68,6 +68,7 @@ public:
                 int num = stoi(command);
 
                 switch (num) {
+                    //add pharmacy
                     case 1: {
                         string name, address, phoneNumber;
 
@@ -87,6 +88,8 @@ public:
 
                         break;
                     }
+
+                        //get pharmacies list
                     case 2: {
                         vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
 
@@ -116,7 +119,44 @@ public:
 
                         break;
                     }
+
+                        //edit pharmacy
                     case 3: {
+                        vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
+
+                        if (!pharmacies.empty()) {
+                            string pharmacyString;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select pharmacy [1, " << pharmacies.size() << "]:\n>";
+                            getline(cin, pharmacyString);
+
+                            int i = stoi(pharmacyString) - 1;
+                            Pharmacy pharmacy = pharmacies[i];
+
+                            string name, address, phoneNumber;
+
+                            cout << "Enter name:\n>";
+                            getline(cin, name);
+
+                            cout << "Enter address:\n>";
+                            getline(cin, address);
+
+                            cout << "Enter phone number:\n>";
+                            getline(cin, phoneNumber);
+
+                            pharmacy.setName(name);
+                            pharmacy.setAddress(address);
+                            pharmacy.setPhoneNumber(phoneNumber);
+
+                            pharmacy.update(hdbc);
+
+                            break;
+                        }
+                        cout << "No pharmacies found." << endl;
+
+                        break;
 
                     }
 
@@ -650,7 +690,7 @@ public:
 
                         break;
                     }
-                    case 20:{
+                    case 20: {
                         break;
                     }
                         //add manufacturer
