@@ -21,8 +21,8 @@ using namespace std;
 #define HELP "Menu:\n\
 1) Add pharmacy\n\
 2) Get pharmacies list\n\
-3) -Edit pharmacy \n\
-4) -Delete pharmacy \n\
+3) Edit pharmacy \n\
+4) Delete pharmacy \n\
 \n\
 5) Add medicine\n\
 6) Get medicines list \n\
@@ -160,7 +160,33 @@ public:
 
                     }
 
+                        //delete pharmacy
                     case 4: {
+                        vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
+
+                        if (!pharmacies.empty()) {
+                            string pharmacyString;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select pharmacy [1, " << pharmacies.size() << "]:\n>";
+                            getline(cin, pharmacyString);
+
+                            int id = pharmacies[stoi(pharmacyString) - 1].getId();
+
+                            try {
+                                Pharmacy::deleteById(hdbc, id);
+                            } catch (runtime_error &e) {
+                                cout << e.what() << endl;
+                            }
+
+                            break;
+                        }
+                        cout << "No pharmacies found." << endl;
+                        break;
+                    }
+
+                    case 44: {
                         vector<Manufacturer> manufacturers = Manufacturer::findAll(hdbc);
 
                         if (!manufacturers.empty()) {
@@ -401,6 +427,7 @@ public:
                             int requestId = medicineBuyings[stoi(medicineBuyingString) - 1].getRequestId();
                             int medicineId = medicineBuyings[stoi(medicineBuyingString) - 1].getMedicineId();
 
+                            //todo check exception
                             MedicineBuying::deleteByRequestIdAndMedicineId(hdbc, requestId, medicineId);
 
                             break;
