@@ -340,6 +340,8 @@ public:
                         if (!medicineBuyings.empty()) {
                             string medicineBuyingString;
 
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
                             cout << "Select medicine buying [1, " << medicineBuyings.size() << "]:\n>";
                             getline(cin, medicineBuyingString);
 
@@ -348,6 +350,7 @@ public:
 
                             MedicineBuying::deleteByRequestIdAndMedicineId(hdbc, requestId, medicineId);
 
+                            break;
                         }
 
                         cout << "No medicine buyings found." << endl;
