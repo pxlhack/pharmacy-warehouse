@@ -30,7 +30,7 @@ using namespace std;
 \n\
 7) Add medicine buying\n\
 8) Get medicine buyings list\n\
-8) Delete medicine buyings list\n\
+9) Delete medicine buyings list\n\
 \n\
 10) Add manufacturer\n\
 11) Get manufacturers list\n\
