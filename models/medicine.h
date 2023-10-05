@@ -76,6 +76,35 @@ public:
         return price;
     }
 
+    void setName(const string &name) {
+        Medicine::name = name;
+    }
+
+    void setManufacturerId(int manufacturerId) {
+        Medicine::manufacturerId = manufacturerId;
+    }
+
+    void setPrice(int price) {
+        Medicine::price = price;
+    }
+
+    void update(SQLHDBC sqlhdbc) {
+        try {
+            checkManufacturerExistence(sqlhdbc);
+        }
+        catch (const runtime_error &e) {
+            throw e;
+        }
+        ostringstream oss;
+        oss << "UPDATE medicines "
+               "SET name = '" << name << "', " <<
+            "manufacturer_id = " << manufacturerId << ", " <<
+            "price = " << price <<
+            " WHERE id = " << id << ";";
+
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
+    }
+
 private:
     int id;
     string name;
