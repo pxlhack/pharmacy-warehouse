@@ -30,7 +30,7 @@ using namespace std;
 8) Delete medicine \n\
 \n\
 9) Create request\n\
-10) -Complete request\n\
+10) Complete request\n\
 11) Get requests list\n\
 12) -Edit request\n\
 13) -Delete request\n\
@@ -348,20 +348,10 @@ public:
                             cout << "Select pharmacy [1, " << pharmacies.size() << "]:\n>";
                             getline(cin, pharmacyNumber);
 
-                            cout << "Enter creation date in format dd/mm/yyyy:\n>";
-                            getline(cin, creationDateString);
-
-                            cout << "Enter completion date in format dd/mm/yyyy:\n>";
-                            getline(cin, completionDateString);
-
-                            Date creationDate = Date::parseFromString(creationDateString);
-                            Date completionDate = Date::parseFromString(completionDateString);
-
                             int pharmacyId = pharmacies[stoi(pharmacyNumber) - 1].getId();
-                            Request request(creationDate, completionDate, pharmacyId);
-
+                            Request request;
                             try {
-                                request.save(hdbc);
+                                request = Request::create(hdbc, pharmacyId);
                             }
                             catch (const runtime_error &e) {
                                 cout << "Error: " << e.what() << endl;
@@ -377,6 +367,24 @@ public:
 
                         //complete request
                     case 10: {
+                        vector<Request> requests = Request::findAll(hdbc);
+
+                        if (!requests.empty()) {
+
+                            string requestString;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select request [1, " << requests.size() << "]:\n>";
+                            getline(cin, requestString);
+
+                            Request request = requests[stoi(requestString) - 1];
+                            request.complete(hdbc);
+                            break;
+                        }
+
+                        cout << "No requests found." << endl;
+
                         break;
                     }
                         //get requests list
@@ -478,7 +486,7 @@ public:
                             cout << "Select request [1, " << requests.size() << "]:\n>";
                             getline(cin, requestString);
 
-                            int id = requests[stoi(requestString)-1].getId();
+                            int id = requests[stoi(requestString) - 1].getId();
                             try {
                                 Request::deleteById(hdbc, id);
                             }
