@@ -416,6 +416,52 @@ public:
 
                         //edit request
                     case 12: {
+                        vector<Request> requests = Request::findAll(hdbc);
+
+                        if (!requests.empty()) {
+
+                            string requestString;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select request [1, " << requests.size() << "]:\n>";
+                            getline(cin, requestString);
+
+                            Request request = requests[stoi(requestString) - 1];
+
+                            string creationDateString, completionDateString, pharmacyNumber;
+
+                            vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
+
+                            cout << "Select pharmacy [1, " << pharmacies.size() << "]:\n>";
+                            getline(cin, pharmacyNumber);
+
+                            cout << "Enter creation date in format dd/mm/yyyy:\n>";
+                            getline(cin, creationDateString);
+
+                            cout << "Enter completion date in format dd/mm/yyyy:\n>";
+                            getline(cin, completionDateString);
+
+                            Date creationDate = Date::parseFromString(creationDateString);
+                            Date completionDate = Date::parseFromString(completionDateString);
+                            int pharmacyId = pharmacies[stoi(pharmacyNumber) - 1].getId();
+
+                            request.setPharmacyId(pharmacyId);
+                            request.setCreationDate(creationDate);
+                            request.setCompletionDate(completionDate);
+
+                            try {
+                                request.update(hdbc);
+                            }
+                            catch (const runtime_error &e) {
+                                cout << "Error: " << e.what() << endl;
+                            }
+
+                            break;
+                        }
+
+                        cout << "No requests found." << endl;
+
                         break;
                     }
 
