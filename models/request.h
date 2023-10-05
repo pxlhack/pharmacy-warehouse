@@ -3,33 +3,32 @@
 
 
 #include "date.h"
+#include <chrono>
 #include "../utils/sql_executor.h"
 
 class Request {
 public:
+    Request() {}
+
     Request(const Date &creationDate, const Date &completionDate, int pharmacyId) :
             creationDate(creationDate),
             completionDate(completionDate),
             pharmacyId(pharmacyId) {}
 
-    int save(SQLHDBC sqlhdbc) {
+    void save(SQLHDBC sqlhdbc) {
         try {
-            checkPharmacyExistence(sqlhdbc);
+            checkPharmacyExistence(sqlhdbc, pharmacyId);
         } catch (runtime_error const &e) {
             throw;
         }
 
         ostringstream oss;
         oss << "INSERT INTO requests(creation_date, completion_date, pharmacy_id) VALUES ('"
-            << creationDate.toString() << "', '" << completionDate.toString() << "', " << pharmacyId
-            << ") RETURNING id;";
+            << creationDate.toString() << "', '1900-01-01', " << pharmacyId << ");";
 
         string insertSql = oss.str();
 
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, insertSql);
-        this->id = stoi(results[0][0]);
-
-        return this->id;
     }
 
 
@@ -45,17 +44,6 @@ public:
         return requests;
     }
 
-    vector<string> toStringVector(SQLHDBC sqlhdbc) {
-        ostringstream oss;
-        oss << "SELECT name FROM pharmacies WHERE id = " << pharmacyId << ";";
-        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
-        if (results.empty()) {
-            throw runtime_error("Pharmacy not found");
-        }
-
-        return {to_string(id), creationDate.toString(), completionDate.toString(), results[0][0]};
-    }
-
     static Request findById(SQLHDBC sqlhdbc, int id) {
         ostringstream oss;
         oss << "SELECT * FROM requests WHERE id = " << id << ";";
@@ -66,15 +54,6 @@ public:
         }
 
         return parseFromVector(results[0]);
-    }
-
-    string toString() {
-        ostringstream oss;
-        oss << "{id = " << id <<
-            "; creationDate = " << creationDate.toString() <<
-            "; completionDate = " << completionDate.toString() <<
-            "; pharmacyId = " << pharmacyId << "}\n";
-        return oss.str();
     }
 
     int getPharmacyId() const {
@@ -108,7 +87,7 @@ public:
 
     void update(SQLHDBC sqlhdbc) {
         try {
-            checkPharmacyExistence(sqlhdbc);
+            checkPharmacyExistence(sqlhdbc, pharmacyId);
         }
         catch (const runtime_error &e) {
             throw e;
@@ -139,6 +118,17 @@ public:
         }
     }
 
+    void complete(SQLHDBC sqlhdbc) {
+        completionDate = Date::getCurrentDate();
+        update(sqlhdbc);
+    }
+
+    static Request create(SQLHDBC sqlhdbc, int pharmacyId) {
+        Request request(Date::getCurrentDate(), pharmacyId);
+        request.save(sqlhdbc);
+        return request;
+    }
+
 private:
     int id;
     Date creationDate;
@@ -151,6 +141,9 @@ private:
             completionDate(completionDate),
             pharmacyId(pharmacyId) {}
 
+    Request(const Date &creationDate, int pharmacyId) :
+            creationDate(creationDate), pharmacyId(pharmacyId) {}
+
 
     static Request parseFromVector(const vector<string> &vector) {
         int id = stoi(vector[0]);
@@ -161,7 +154,7 @@ private:
         return {id, creationDate, completionDate, pharmacyId};
     }
 
-    void checkPharmacyExistence(SQLHDBC sqlhdbc) {
+    static void checkPharmacyExistence(SQLHDBC sqlhdbc, int pharmacyId) {
         ostringstream oss;
         oss << "SELECT 1 FROM pharmacies WHERE id = " << pharmacyId << ";";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
