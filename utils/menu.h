@@ -29,21 +29,21 @@ using namespace std;
 7) Edit medicine \n\
 8) Delete medicine \n\
 \n\
-9) -Create request\n\
+9) Create request\n\
 10) -Complete request\n\
-11) -Get requests list\n\
+11) Get requests list\n\
 12) -Edit request\n\
 13) -Delete request\n\
 \n\
 14) Add medicine buying\n\
 15) Get medicine buyings list\n\
-16) -Edit medicine buyings list\n\
-17) Delete medicine buyings list\n\
+16) -Edit medicine buying\n\
+17) Delete medicine buying\n\
 \n\
 18) Add manufacturer\n\
 19) Get manufacturers list\n\
-20) -Edit manufacturers -list\n\
-21) -Delete manufacturers -list\n\
+20) -Edit manufacturer\n\
+21) -Delete manufacturer\n\
 \n\
 0) Exit\n\
 "
@@ -322,7 +322,7 @@ public:
                             int id = medicines[i].getId();
 
                             try {
-                               Medicine::deleteById(hdbc, id);
+                                Medicine::deleteById(hdbc, id);
                             }
                             catch (const runtime_error &e) {
                                 cout << "Error: " << e.what() << endl;
@@ -336,7 +336,8 @@ public:
                         break;
                     }
 
-                    case 65: {
+                        //create request
+                    case 9: {
                         vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
 
                         if (!pharmacies.empty()) {
@@ -373,7 +374,13 @@ public:
 
                         break;
                     }
-                    case 72: {
+
+                        //complete request
+                    case 10: {
+                        break;
+                    }
+                        //get requests list
+                    case 11: {
                         vector<Request> requests = Request::findAll(hdbc);
 
                         if (!requests.empty()) {
@@ -407,7 +414,18 @@ public:
                         break;
                     }
 
-                    case 84: {
+                        //edit request
+                    case 12: {
+                        break;
+                    }
+
+                        //delete request
+                    case 13: {
+                        break;
+                    }
+
+                        //add medicine buying
+                    case 14: {
                         vector<Medicine> medicines = Medicine::findAll(hdbc);
 
                         if (!medicines.empty()) {
@@ -450,7 +468,9 @@ public:
 
                         break;
                     }
-                    case 9: {
+
+                        //get medicine buyings list
+                    case 15: {
                         vector<MedicineBuying> medicineBuyings = MedicineBuying::findAll(hdbc);
 
                         if (!medicineBuyings.empty()) {
@@ -496,7 +516,14 @@ public:
 
                         break;
                     }
-                    case 10: {
+
+                        //edit medicine buying
+                    case 16: {
+                        break;
+                    }
+
+                        //delete medicine buying
+                    case 17: {
                         vector<MedicineBuying> medicineBuyings = MedicineBuying::findAll(hdbc);
 
                         if (!medicineBuyings.empty()) {
@@ -521,290 +548,9 @@ public:
                         break;
                     }
 
-                    case 11: {
-                        string name, address, phoneNumber;
 
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-                        cout << "Enter name:\n>";
-                        getline(cin, name);
-
-                        cout << "Enter address:\n>";
-                        getline(cin, address);
-
-                        cout << "Enter phone number:\n>";
-                        getline(cin, phoneNumber);
-
-                        Pharmacy pharmacy(name, address, phoneNumber);
-                        pharmacy.save(hdbc);
-
-                        break;
-                    }
-                    case 12: {
-                        vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
-
-                        if (!pharmacies.empty()) {
-
-                            vector<vector<string>> data;
-
-                            for (int i = 0; i < pharmacies.size(); i++) {
-                                data.push_back(
-                                        {
-                                                to_string(i + 1),
-                                                pharmacies[i].getName(),
-                                                pharmacies[i].getAddress(),
-                                                pharmacies[i].getPhoneNumber()
-                                        }
-                                );
-                            }
-
-                            vector<string> headers = {"№", "Pharmacy", "Address", "Phone number"};
-
-                            TablePrinter::printTable(headers, data);
-
-                            break;
-                        }
-
-                        cout << "No pharmacies found." << endl;
-
-                        break;
-                    }
-                    case 13: {
-                        break;
-                    }
-
-                    case 14: {
-                        vector<Manufacturer> manufacturers = Manufacturer::findAll(hdbc);
-
-                        if (!manufacturers.empty()) {
-                            string name, manufacturerNumber, price;
-
-                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-                            cout << "Enter name:\n>";
-                            getline(cin, name);
-
-                            cout << "Select manufacturer [1, " << manufacturers.size() << "]:\n>";
-                            getline(cin, manufacturerNumber);
-
-                            cout << "Enter price:\n>";
-                            getline(cin, price);
-
-                            int manufacturerId = manufacturers[stoi(manufacturerNumber) - 1].getId();
-                            Medicine medicine(name, manufacturerId, stoi(price));
-
-                            try {
-                                medicine.save(hdbc);
-                            }
-                            catch (const runtime_error &e) {
-                                cout << "Error: " << e.what() << endl;
-                            }
-
-                            break;
-                        }
-
-                        cout << "No manufacturers found. You cannot add a medicine\n";
-
-                        break;
-                    }
-                    case 15: {
-                        vector<Medicine> medicines = Medicine::findAll(hdbc);
-
-                        if (!medicines.empty()) {
-                            vector<Manufacturer> manufacturers;
-                            for (const Medicine &medicine: medicines) {
-                                manufacturers.push_back(Manufacturer::findById(hdbc, medicine.getManufacturerId()));
-                            }
-
-                            vector<vector<string>> data;
-
-                            for (int i = 0; i < medicines.size(); ++i) {
-                                data.push_back(
-                                        {
-                                                to_string(i + 1),
-                                                medicines[i].getName(),
-                                                manufacturers[i].getName(),
-                                                to_string(medicines[i].getPrice())
-                                        }
-                                );
-                            }
-
-                            vector<string> headers = {"№", "Medicine", "Manufacturer", "Price"};
-
-                            TablePrinter::printTable(headers, data);
-
-                            break;
-                        }
-
-                        cout << "No medicines found." << endl;
-                        break;
-                    }
-
-                    case 16: {
-                        vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
-
-                        if (!pharmacies.empty()) {
-                            string creationDateString, completionDateString, pharmacyNumber;
-
-                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-                            cout << "Select pharmacy [1, " << pharmacies.size() << "]:\n>";
-                            getline(cin, pharmacyNumber);
-
-                            cout << "Enter creation date in format dd/mm/yyyy:\n>";
-                            getline(cin, creationDateString);
-
-                            cout << "Enter completion date in format dd/mm/yyyy:\n>";
-                            getline(cin, completionDateString);
-
-                            Date creationDate = Date::parseFromString(creationDateString);
-                            Date completionDate = Date::parseFromString(completionDateString);
-
-                            int pharmacyId = pharmacies[stoi(pharmacyNumber) - 1].getId();
-                            Request request(creationDate, completionDate, pharmacyId);
-
-                            try {
-                                request.save(hdbc);
-                            }
-                            catch (const runtime_error &e) {
-                                cout << "Error: " << e.what() << endl;
-                            }
-
-                            break;
-                        }
-
-                        cout << "No pharmacies found. You cannot add a request\n";
-
-                        break;
-                    }
-                    case 17: {
-                        vector<Request> requests = Request::findAll(hdbc);
-
-                        if (!requests.empty()) {
-                            vector<Pharmacy> pharmacies;
-                            for (Request request: requests) {
-                                pharmacies.push_back(Pharmacy::findById(hdbc, request.getPharmacyId()));
-                            }
-
-                            vector<vector<string>> data;
-
-                            for (int i = 0; i < requests.size(); ++i) {
-                                data.push_back(
-                                        {
-                                                to_string(i + 1),
-                                                requests[i].getCreationDate().toString(),
-                                                requests[i].getCompletionDate().toString(),
-                                                pharmacies[i].getName()
-                                        }
-                                );
-                            }
-
-                            vector<string> headers = {"№", "Creation date", "Completion date", "Pharmacy"};
-
-                            TablePrinter::printTable(headers, data);
-
-                            break;
-                        }
-
-                        cout << "No requests found." << endl;
-
-                        break;
-                    }
-
-                    case 18: {
-                        vector<Medicine> medicines = Medicine::findAll(hdbc);
-
-                        if (!medicines.empty()) {
-                            vector<Request> requests = Request::findAll(hdbc);
-
-                            if (!requests.empty()) {
-                                string medicineString, requestString, medicineNumberString;
-
-                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-                                cout << "Select medicine [1, " << medicines.size() << "]:\n>";
-                                getline(cin, medicineString);
-
-                                cout << "Select request [1, " << requests.size() << "]:\n>";
-                                getline(cin, requestString);
-
-                                cout << "Enter medicine number:\n>";
-                                getline(cin, medicineNumberString);
-
-                                int medicineId = medicines[stoi(medicineString) - 1].getId();
-                                int requestId = requests[stoi(requestString) - 1].getId();
-
-                                MedicineBuying medicineBuying(requestId, medicineId, stoi(medicineNumberString));
-
-                                try {
-                                    medicineBuying.save(hdbc);
-                                }
-                                catch (const runtime_error &e) {
-                                    cout << "Error: " << e.what() << endl;
-                                }
-                                break;
-                            }
-
-                            cout << "No requests found. You cannot add a medicine buying\n";
-
-                            break;
-                        }
-
-                        cout << "No medicines found. You cannot add a medicine buying\n";
-
-                        break;
-                    }
-                    case 19: {
-                        vector<MedicineBuying> medicineBuyings = MedicineBuying::findAll(hdbc);
-
-                        if (!medicineBuyings.empty()) {
-                            vector<Medicine> medicines;
-                            for (MedicineBuying medicineBuying: medicineBuyings) {
-                                Medicine medicine = Medicine::findById(hdbc, medicineBuying.getMedicineId());
-                                medicines.push_back(medicine);
-                            }
-
-                            vector<Request> requests;
-                            for (MedicineBuying medicineBuying: medicineBuyings) {
-                                Request request = Request::findById(hdbc, medicineBuying.getRequestId());
-                                requests.push_back(request);
-                            }
-
-                            vector<Pharmacy> pharmacies;
-                            for (Request request: requests) {
-                                Pharmacy pharmacy = Pharmacy::findById(hdbc, request.getPharmacyId());
-                                pharmacies.push_back(pharmacy);
-                            }
-
-                            vector<vector<string>> data;
-                            for (int i = 0; i < medicineBuyings.size(); ++i) {
-                                data.push_back(
-                                        {
-                                                to_string(i + 1),
-                                                medicines[i].getName(),
-                                                pharmacies[i].getName(),
-                                                to_string(medicineBuyings[i].getMedicineNumber())
-
-                                        }
-                                );
-                            }
-
-                            vector<string> headers = {"№", "Medicine", "Pharmacy", "Medicine number"};
-
-                            TablePrinter::printTable(headers, data);
-
-                            break;
-                        }
-
-                        cout << "No medicine buyings found." << endl;
-
-                        break;
-                    }
-                    case 20: {
-                        break;
-                    }
                         //add manufacturer
-                    case 21: {
+                    case 18: {
                         vector<Country> countries = Country::findAll(hdbc);
 
                         if (!countries.empty()) {
@@ -831,8 +577,9 @@ public:
                         break;
                     }
 
-                        // get manufacturers list
-                    case 22: {
+
+                        //get manufacturers list
+                    case 19: {
                         vector<Manufacturer> manufacturers = Manufacturer::findAll(hdbc);
 
                         if (!manufacturers.empty()) {
@@ -864,6 +611,15 @@ public:
                         break;
                     }
 
+                        //edit manufacturer
+                    case 20: {
+                        break;
+                    }
+
+                        //delete manufacturer
+                    case 21: {
+                        break;
+                    }
 
                     case 0: {
                         isWorked = false;
@@ -878,7 +634,6 @@ public:
                     }
                 }
             }
-
         } while (isWorked);
     }
 
