@@ -37,12 +37,12 @@ using namespace std;
 \n\
 14) Add medicine buying\n\
 15) Get medicine buyings list\n\
-16) -Edit medicine buying\n\
+16) Edit medicine buying\n\
 17) Delete medicine buying\n\
 \n\
 18) Add manufacturer\n\
 19) Get manufacturers list\n\
-20) -Edit manufacturer\n\
+20) Edit manufacturer\n\
 21) -Delete manufacturer\n\
 \n\
 0) Exit\n\
@@ -724,6 +724,37 @@ public:
 
                         //edit manufacturer
                     case 20: {
+                        vector<Manufacturer> manufacturers = Manufacturer::findAll(hdbc);
+
+                        if (!manufacturers.empty()) {
+                            string manufacturerString;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select manufacturer [1, " << manufacturers.size() << "]:\n>";
+                            getline(cin, manufacturerString);
+
+                            Manufacturer manufacturer = manufacturers[stoi(manufacturerString) - 1];
+
+                            string name, countryNumber;
+
+                            vector<Country> countries = Country::findAll(hdbc);
+                            cout << "Select country [1, " << countries.size() << "]:\n>";
+                            getline(cin, countryNumber);
+
+                            cout << "Enter name:\n>";
+                            getline(cin, name);
+
+                            int countryId = countries[stoi(countryNumber) - 1].getId();
+
+                            manufacturer.setName(name);
+                            manufacturer.setCountryId(countryId);
+
+                            manufacturer.update(hdbc);
+
+                            break;
+                        }
+                        cout << "No manufacturers found. You can add a manufacturer\n";
                         break;
                     }
 
