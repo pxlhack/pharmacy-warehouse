@@ -105,6 +105,23 @@ public:
         SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
 
+    static void deleteById(SQLHDBC sqlhdbc, int id) {
+        if (isMedicineExists(sqlhdbc, id)) {
+            if (!doesAnyMedicineBuyingReferToMedicine(sqlhdbc, id)) {
+                ostringstream oss;
+                oss << "DELETE FROM medicines "
+                       "WHERE id = " << id << ";";
+                vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+            } else {
+                throw runtime_error("The medicine is present in the medicine buyings, it cannot be deleted");
+            }
+
+        } else {
+            throw runtime_error("Medicine not found");
+        }
+    }
+
+
 private:
     int id;
     string name;
@@ -132,6 +149,26 @@ private:
         }
     }
 
+    static bool isMedicineExists(SQLHDBC sqlhdbc, int id) {
+        ostringstream oss;
+        oss << "SELECT 1 FROM medicines WHERE id = " << id << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+
+        if (!results.empty() && results[0][0] == "1") {
+            return true;
+        }
+        return false;
+    }
+
+    static bool doesAnyMedicineBuyingReferToMedicine(SQLHDBC sqlhdbc, int id) {
+        ostringstream oss;
+        oss << "SELECT 1 FROM medicine_buyings WHERE medicine_id = " << id << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+        if (!results.empty() && results[0][0] == "1") {
+            return true;
+        }
+        return false;
+    }
 };
 
 
