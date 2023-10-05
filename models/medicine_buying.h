@@ -52,6 +52,11 @@ public:
     }
 
 
+    void setMedicineNumber(int medicineNumber) {
+        MedicineBuying::medicineNumber = medicineNumber;
+    }
+
+
     static void deleteByRequestIdAndMedicineId(SQLHDBC sqlhdbc, int requestId, int medicineId) {
         if (isMedicineBuyingExists(sqlhdbc, requestId, medicineId)) {
             ostringstream oss;
@@ -62,6 +67,16 @@ public:
         } else {
             throw runtime_error("Medicine buying not found");
         }
+    }
+
+    void update(SQLHDBC sqlhdbc) {
+        ostringstream oss;
+        oss << "UPDATE medicine_buyings "
+               "SET medicine_number = " << medicineNumber <<
+            " WHERE request_id = " << requestId <<
+            " AND medicine_id =" << medicineId << ";";
+
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
 
 private:
