@@ -8,6 +8,8 @@ using namespace std;
 
 class Date {
 public:
+    Date() {}
+
     Date(int day, int month, int year) :
             day(day), month(month), year(year) {}
 
@@ -33,6 +35,16 @@ public:
         int day = stoi(str.substr(8, 2));
 
         return {day, month, year};
+    }
+
+    static Date getCurrentDate() {
+        const time_t tm = time(nullptr);
+
+        char buf[64];
+        strftime(buf, std::size(buf), "%d/%m/%Y", localtime(&tm));
+        string dateString(buf);
+
+        return parseFromString(dateString);
     }
 
 private:
