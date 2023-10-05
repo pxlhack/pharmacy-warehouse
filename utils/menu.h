@@ -760,6 +760,29 @@ public:
 
                         //delete manufacturer
                     case 21: {
+                        vector<Manufacturer> manufactures = Manufacturer::findAll(hdbc);
+
+                        if (!manufactures.empty()) {
+                            string manufacturerString;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select manufacturer [1, " << manufactures.size() << "]:\n>";
+                            getline(cin, manufacturerString);
+
+                            int id = manufactures[stoi(manufacturerString) - 1].getId();
+
+                            try {
+                                Manufacturer::deleteById(hdbc, id);
+                            }
+                            catch (const runtime_error &e) {
+                                cout << e.what() << endl;
+                            }
+                            break;
+                        }
+
+                        cout << "No manufacturers  found." << endl;
+
                         break;
                     }
 
