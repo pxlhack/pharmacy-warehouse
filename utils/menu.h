@@ -467,6 +467,30 @@ public:
 
                         //delete request
                     case 13: {
+                        vector<Request> requests = Request::findAll(hdbc);
+
+                        if (!requests.empty()) {
+
+                            string requestString;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select request [1, " << requests.size() << "]:\n>";
+                            getline(cin, requestString);
+
+                            int id = requests[stoi(requestString)-1].getId();
+                            try {
+                                Request::deleteById(hdbc, id);
+                            }
+                            catch (const runtime_error &e) {
+                                cout << "Error: " << e.what() << endl;
+                            }
+
+                            break;
+                        }
+
+                        cout << "No requests found." << endl;
+
                         break;
                     }
 
