@@ -32,8 +32,8 @@ using namespace std;
 9) Create request\n\
 10) Complete request\n\
 11) Get requests list\n\
-12) -Edit request\n\
-13) -Delete request\n\
+12) Edit request\n\
+13) Delete request\n\
 \n\
 14) Add medicine buying\n\
 15) Get medicine buyings list\n\
@@ -597,6 +597,36 @@ public:
 
                         //edit medicine buying
                     case 16: {
+                        vector<MedicineBuying> medicineBuyings = MedicineBuying::findAll(hdbc);
+
+                        if (!medicineBuyings.empty()) {
+                            string medicineBuyingString;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select medicine buying [1, " << medicineBuyings.size() << "]:\n>";
+                            getline(cin, medicineBuyingString);
+
+                            string medicineNumberString;
+
+                            cout << "Enter medicine number:\n>";
+                            getline(cin, medicineNumberString);
+
+                            MedicineBuying medicineBuying = medicineBuyings[stoi(medicineBuyingString) - 1];
+                            medicineBuying.setMedicineNumber(stoi(medicineNumberString));
+
+                            try {
+                                medicineBuying.update(hdbc);
+                            }
+                            catch (const runtime_error &e) {
+                                cout << "Error: " << e.what() << endl;
+                            }
+
+                            break;
+                        }
+
+                        cout << "No medicine buyings found." << endl;
+
                         break;
                     }
 
@@ -615,9 +645,12 @@ public:
                             int requestId = medicineBuyings[stoi(medicineBuyingString) - 1].getRequestId();
                             int medicineId = medicineBuyings[stoi(medicineBuyingString) - 1].getMedicineId();
 
-                            //todo check exception
-                            MedicineBuying::deleteByRequestIdAndMedicineId(hdbc, requestId, medicineId);
-
+                            try {
+                                MedicineBuying::deleteByRequestIdAndMedicineId(hdbc, requestId, medicineId);
+                            }
+                            catch (const runtime_error &e) {
+                                cout << e.what() << endl;
+                            }
                             break;
                         }
 
