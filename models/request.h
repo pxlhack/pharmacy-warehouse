@@ -93,6 +93,35 @@ public:
         return completionDate;
     }
 
+    void setCreationDate(const Date &creationDate) {
+        Request::creationDate = creationDate;
+    }
+
+    void setCompletionDate(const Date &completionDate) {
+        Request::completionDate = completionDate;
+    }
+
+    void setPharmacyId(int pharmacyId) {
+        Request::pharmacyId = pharmacyId;
+    }
+
+
+    void update(SQLHDBC sqlhdbc) {
+        try {
+            checkPharmacyExistence(sqlhdbc);
+        }
+        catch (const runtime_error &e) {
+            throw e;
+        }
+        ostringstream oss;
+        oss << "UPDATE requests "
+               "SET creation_date = '" << creationDate.toString() << "', " <<
+            "completion_date = '" << completionDate.toString() << "', " <<
+            "pharmacy_id = " << pharmacyId <<
+            " WHERE id = " << id << ";";
+
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
+    }
 
 private:
     int id;
