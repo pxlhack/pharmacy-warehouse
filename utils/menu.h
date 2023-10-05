@@ -26,8 +26,8 @@ using namespace std;
 \n\
 5) Add medicine\n\
 6) Get medicines list \n\
-7) -Edit medicine \n\
-8) -Delete medicine \n\
+7) Edit medicine \n\
+8) Delete medicine \n\
 \n\
 9) -Create request\n\
 10) -Complete request\n\
@@ -300,6 +300,37 @@ public:
 
                             break;
                         }
+
+                        cout << "No pharmacies found." << endl;
+
+                        break;
+                    }
+
+                        //delete medicine
+                    case 8: {
+                        vector<Medicine> medicines = Medicine::findAll(hdbc);
+
+                        if (!medicines.empty()) {
+                            string medicineString;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select medicine [1, " << medicines.size() << "]:\n>";
+                            getline(cin, medicineString);
+
+                            int i = stoi(medicineString) - 1;
+                            int id = medicines[i].getId();
+
+                            try {
+                               Medicine::deleteById(hdbc, id);
+                            }
+                            catch (const runtime_error &e) {
+                                cout << "Error: " << e.what() << endl;
+                            }
+
+                            break;
+                        }
+
                         cout << "No pharmacies found." << endl;
 
                         break;
@@ -376,7 +407,7 @@ public:
                         break;
                     }
 
-                    case 8: {
+                    case 84: {
                         vector<Medicine> medicines = Medicine::findAll(hdbc);
 
                         if (!medicines.empty()) {
