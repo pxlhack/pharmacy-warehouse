@@ -44,6 +44,17 @@ public:
         return parseFromVector(results[0]);
     }
 
+
+    void update(SQLHDBC sqlhdbc) {
+        ostringstream oss;
+        oss << "UPDATE manufacturers "
+               "SET name = '" << name <<
+            "', country_id = '" << countryId <<
+            "' WHERE id = " << id << ";";
+
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
+    }
+
     const string &getName() const {
         return name;
     }
@@ -54,6 +65,14 @@ public:
 
     int getId() const {
         return id;
+    }
+
+    void setName(const string &name) {
+        Manufacturer::name = name;
+    }
+
+    void setCountryId(int countryId) {
+        Manufacturer::countryId = countryId;
     }
 
 private:
