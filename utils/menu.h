@@ -157,7 +157,6 @@ public:
                         cout << "No pharmacies found." << endl;
 
                         break;
-
                     }
 
                         //delete pharmacy
@@ -182,7 +181,9 @@ public:
 
                             break;
                         }
+
                         cout << "No pharmacies found." << endl;
+
                         break;
                     }
 
@@ -256,6 +257,53 @@ public:
                         break;
                     }
 
+                        //edit medicine
+                    case 7: {
+                        vector<Medicine> medicines = Medicine::findAll(hdbc);
+
+                        if (!medicines.empty()) {
+                            string medicineString;
+
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                            cout << "Select medicine [1, " << medicines.size() << "]:\n>";
+                            getline(cin, medicineString);
+
+                            int i = stoi(medicineString) - 1;
+                            Medicine medicine = medicines[i];
+
+                            string name, manufacturerNumber, price;
+
+                            cout << "Enter name:\n>";
+                            getline(cin, name);
+
+                            cout << "Enter manufacturer number:\n>";
+                            getline(cin, manufacturerNumber);
+
+                            cout << "Enter price:\n>";
+                            getline(cin, price);
+
+                            medicine.setName(name);
+                            medicine.setPrice(stoi(price));
+
+                            vector<Manufacturer> manufacturers = Manufacturer::findAll(hdbc);
+
+                            int manufacturerIndex = stoi(manufacturerNumber) - 1;
+                            medicine.setManufacturerId(manufacturers[manufacturerIndex].getId());
+
+                            try {
+                                medicine.update(hdbc);
+                            }
+                            catch (const runtime_error &e) {
+                                cout << "Error: " << e.what() << endl;
+                            }
+
+                            break;
+                        }
+                        cout << "No pharmacies found." << endl;
+
+                        break;
+                    }
 
                     case 65: {
                         vector<Pharmacy> pharmacies = Pharmacy::findAll(hdbc);
@@ -294,7 +342,7 @@ public:
 
                         break;
                     }
-                    case 7: {
+                    case 72: {
                         vector<Request> requests = Request::findAll(hdbc);
 
                         if (!requests.empty()) {
