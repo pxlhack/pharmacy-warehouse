@@ -55,6 +55,23 @@ public:
         SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
 
+
+    static void deleteById(SQLHDBC sqlhdbc, int id) {
+        if (isManufacturerExists(sqlhdbc, id)) {
+            if (!doesAnyMedicineToManufacturer(sqlhdbc, id)) {
+                ostringstream oss;
+                oss << "DELETE FROM manufacturers "
+                       "WHERE id = " << id << ";";
+                vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+            } else {
+                throw runtime_error("The manufacturer is present in the medicines, it cannot be deleted");
+            }
+
+        } else {
+            throw runtime_error("Medicine buying not found");
+        }
+    }
+
     const string &getName() const {
         return name;
     }
@@ -86,6 +103,27 @@ private:
 
     static Manufacturer parseFromVector(const vector<string> &vector) {
         return {stoi(vector[0]), vector[1], stoi(vector[2])};
+    }
+
+    static bool doesAnyMedicineToManufacturer(SQLHDBC sqlhdbc, int id) {
+        ostringstream oss;
+        oss << "SELECT 1 FROM medicines WHERE manufacturer_id = " << id << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+        if (!results.empty() && results[0][0] == "1") {
+            return true;
+        }
+        return false;
+    }
+
+    static bool isManufacturerExists(SQLHDBC sqlhdbc, int id) {
+        ostringstream oss;
+        oss << "SELECT 1 FROM manufacturers WHERE id = " << id << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+
+        if (!results.empty() && results[0][0] == "1") {
+            return true;
+        }
+        return false;
     }
 
 };
