@@ -740,25 +740,32 @@ public:
 
                             Manufacturer manufacturer = manufacturers[stoi(manufacturerString) - 1];
 
-                            string name, countryNumber;
-
                             vector<Country> countries = Country::findAll(hdbc);
+
+                            string countryNumber;
                             cout << "Select country [1, " << countries.size() << "]:\n>";
                             getline(cin, countryNumber);
 
+                            int countryId = countries[stoi(countryNumber) - 1].getId();
+
+                            string name;
                             cout << "Enter name:\n>";
                             getline(cin, name);
-
-                            int countryId = countries[stoi(countryNumber) - 1].getId();
 
                             manufacturer.setName(name);
                             manufacturer.setCountryId(countryId);
 
-                            manufacturer.update(hdbc);
+                            try {
+                                manufacturer.update(hdbc);
+                            } catch (const runtime_error &e) {
+                                cout << e.what() << endl;
+                            }
 
                             break;
                         }
-                        cout << "No manufacturers found. You can add a manufacturer\n";
+
+                        cout << "No manufacturers found.\n";
+
                         break;
                     }
 
