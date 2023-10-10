@@ -20,35 +20,6 @@ public:
             phoneNumber(move(phoneNumber)) {}
 
 
-    string getName() {
-        return name;
-    }
-
-    int getId() const {
-        return id;
-    }
-
-    const string &getAddress() const {
-        return address;
-    }
-
-    const string &getPhoneNumber() const {
-        return phoneNumber;
-    }
-
-    void setName(const string &name) {
-        Pharmacy::name = name;
-    }
-
-    void setAddress(const string &address) {
-        Pharmacy::address = address;
-    }
-
-    void setPhoneNumber(const string &phoneNumber) {
-        Pharmacy::phoneNumber = phoneNumber;
-    }
-
-
     void save(SQLHDBC sqlhdbc) {
         ostringstream oss;
         oss << "INSERT INTO pharmacies(name, address, phone_number) VALUES ('"
@@ -57,6 +28,17 @@ public:
         string insertSql = oss.str();
 
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, insertSql);
+    }
+
+    void update(SQLHDBC sqlhdbc) {
+        ostringstream oss;
+        oss << "UPDATE pharmacies "
+               "SET name = '" << name << "', " <<
+            "address = '" << address << "', " <<
+            "phone_number = '" << phoneNumber <<
+            "' WHERE id = " << id << ";";
+
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
 
     static vector<Pharmacy> findAll(SQLHDBC sqlhdbc) {
@@ -83,17 +65,6 @@ public:
         return parseFromVector(results[0]);
     }
 
-    void update(SQLHDBC sqlhdbc) {
-        ostringstream oss;
-        oss << "UPDATE pharmacies "
-               "SET name = '" << name << "', " <<
-            "address = '" << address << "', " <<
-            "phone_number = '" << phoneNumber <<
-            "' WHERE id = " << id << ";";
-
-        SqlExecutor::executeSql(sqlhdbc, oss.str());
-    }
-
     static void deleteById(SQLHDBC sqlhdbc, int id) {
         if (isPharmacyExists(sqlhdbc, id)) {
             if (!doesAnyRequestReferToPharmacy(sqlhdbc, id)) {
@@ -110,6 +81,35 @@ public:
         }
     }
 
+
+    int getId() const {
+        return id;
+    }
+
+    const string &getName() const {
+        return name;
+    }
+
+    const string &getAddress() const {
+        return address;
+    }
+
+    const string &getPhoneNumber() const {
+        return phoneNumber;
+    }
+
+    void setName(const string &name) {
+        Pharmacy::name = name;
+    }
+
+    void setAddress(const string &address) {
+        Pharmacy::address = address;
+    }
+
+    void setPhoneNumber(const string &phoneNumber) {
+        Pharmacy::phoneNumber = phoneNumber;
+    }
+
 private:
     int id;
     string name;
@@ -123,10 +123,6 @@ private:
             name(move(name)),
             address(move(address)),
             phoneNumber(move(phoneNumber)) {}
-
-    static Pharmacy parseFromVector(vector<string> vector) {
-        return {stoi(vector[0]), vector[1], vector[2], vector[3]};
-    }
 
 
     static bool isPharmacyExists(SQLHDBC sqlhdbc, int id) {
@@ -148,6 +144,10 @@ private:
             return true;
         }
         return false;
+    }
+
+    static Pharmacy parseFromVector(vector<string> vector) {
+        return {stoi(vector[0]), vector[1], vector[2], vector[3]};
     }
 };
 
