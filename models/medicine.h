@@ -14,6 +14,7 @@ public:
             name(std::move(name)), manufacturerId(manufacturerId),
             price(price) {}
 
+
     void save(SQLHDBC sqlhdbc) {
         try {
             checkManufacturerExistence(sqlhdbc);
@@ -30,6 +31,23 @@ public:
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, insertSql);
     }
 
+    void update(SQLHDBC sqlhdbc) {
+        try {
+            checkManufacturerExistence(sqlhdbc);
+        }
+        catch (const runtime_error &e) {
+            throw e;
+        }
+        ostringstream oss;
+        oss << "UPDATE medicines "
+               "SET name = '" << name << "', " <<
+            "manufacturer_id = " << manufacturerId << ", " <<
+            "price = " << price <<
+            " WHERE id = " << id << ";";
+
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
+    }
+
     static vector<Medicine> findAll(SQLHDBC sqlhdbc) {
         string selectSql = "SELECT * FROM medicines;";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, selectSql);
@@ -40,10 +58,6 @@ public:
             medicines.push_back(medicine);
         }
         return medicines;
-    }
-
-    vector<string> toStringVector() {
-        return {to_string(this->id), this->name, to_string(this->manufacturerId), to_string(this->price)};
     }
 
     static Medicine findById(SQLHDBC sqlhdbc, int id) {
@@ -58,14 +72,29 @@ public:
         return parseFromVector(results[0]);
     }
 
+    static void deleteById(SQLHDBC sqlhdbc, int id) {
+        if (isMedicineExists(sqlhdbc, id)) {
+            if (!doesAnyMedicineBuyingReferToMedicine(sqlhdbc, id)) {
+                ostringstream oss;
+                oss << "DELETE FROM medicines "
+                       "WHERE id = " << id << ";";
+                vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+            } else {
+                throw runtime_error("The medicine is present in the medicine buyings, it cannot be deleted");
+            }
 
-    const string &getName() const {
-        return name;
+        } else {
+            throw runtime_error("Medicine not found");
+        }
     }
 
 
     int getId() const {
         return id;
+    }
+
+    const string &getName() const {
+        return name;
     }
 
     int getManufacturerId() const {
@@ -88,40 +117,6 @@ public:
         Medicine::price = price;
     }
 
-    void update(SQLHDBC sqlhdbc) {
-        try {
-            checkManufacturerExistence(sqlhdbc);
-        }
-        catch (const runtime_error &e) {
-            throw e;
-        }
-        ostringstream oss;
-        oss << "UPDATE medicines "
-               "SET name = '" << name << "', " <<
-            "manufacturer_id = " << manufacturerId << ", " <<
-            "price = " << price <<
-            " WHERE id = " << id << ";";
-
-        SqlExecutor::executeSql(sqlhdbc, oss.str());
-    }
-
-    static void deleteById(SQLHDBC sqlhdbc, int id) {
-        if (isMedicineExists(sqlhdbc, id)) {
-            if (!doesAnyMedicineBuyingReferToMedicine(sqlhdbc, id)) {
-                ostringstream oss;
-                oss << "DELETE FROM medicines "
-                       "WHERE id = " << id << ";";
-                vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
-            } else {
-                throw runtime_error("The medicine is present in the medicine buyings, it cannot be deleted");
-            }
-
-        } else {
-            throw runtime_error("Medicine not found");
-        }
-    }
-
-
 private:
     int id;
     string name;
@@ -132,12 +127,6 @@ private:
             id(id), name(std::move(name)),
             manufacturerId(manufacturerId),
             price(price) {}
-
-
-    static Medicine parseFromVector(vector<string> vector) {
-        Medicine medicine(stoi(vector[0]), vector[1], stoi(vector[2]), stoi(vector[3]));
-        return medicine;
-    }
 
     void checkManufacturerExistence(SQLHDBC sqlhdbc) {
         ostringstream oss;
@@ -168,6 +157,11 @@ private:
             return true;
         }
         return false;
+    }
+
+    static Medicine parseFromVector(vector<string> vector) {
+        Medicine medicine(stoi(vector[0]), vector[1], stoi(vector[2]), stoi(vector[3]));
+        return medicine;
     }
 };
 
