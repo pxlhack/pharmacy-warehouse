@@ -678,7 +678,11 @@ public:
                             int countryId = countries[stoi(countryNumber) - 1].getId();
 
                             Manufacturer manufacturer(name, countryId);
-                            manufacturer.save(hdbc);
+                            try {
+                                manufacturer.save(hdbc);
+                            } catch (const runtime_error &e) {
+                                cout << e.what() << endl;
+                            }
 
                             break;
                         }
