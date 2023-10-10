@@ -29,6 +29,13 @@ public:
     }
 
     void update(SQLHDBC sqlhdbc) {
+        try {
+            checkCountryExistence(sqlhdbc);
+        }
+        catch (const runtime_error &e) {
+            throw;
+        }
+
         ostringstream oss;
         oss << "UPDATE manufacturers "
                "SET name = '" << name <<
