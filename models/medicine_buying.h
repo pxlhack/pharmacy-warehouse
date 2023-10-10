@@ -26,6 +26,15 @@ public:
         SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
 
+    void update(SQLHDBC sqlhdbc) const {
+        ostringstream oss;
+        oss << "UPDATE medicine_buyings "
+               "SET medicine_number = " << medicineNumber <<
+            " WHERE request_id = " << requestId <<
+            " AND medicine_id =" << medicineId << ";";
+
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
+    }
 
     static vector<MedicineBuying> findAll(SQLHDBC sqlhdbc) {
         string selectSql = "SELECT * FROM medicine_buyings;";
@@ -39,24 +48,6 @@ public:
         return medicine_buyings;
     }
 
-    int getMedicineId() const {
-        return medicineId;
-    }
-
-    int getRequestId() const {
-        return requestId;
-    }
-
-    int getMedicineNumber() const {
-        return medicineNumber;
-    }
-
-
-    void setMedicineNumber(int medicineNumber) {
-        MedicineBuying::medicineNumber = medicineNumber;
-    }
-
-
     static void deleteByRequestIdAndMedicineId(SQLHDBC sqlhdbc, int requestId, int medicineId) {
         if (isMedicineBuyingExists(sqlhdbc, requestId, medicineId)) {
             ostringstream oss;
@@ -69,14 +60,21 @@ public:
         }
     }
 
-    void update(SQLHDBC sqlhdbc) {
-        ostringstream oss;
-        oss << "UPDATE medicine_buyings "
-               "SET medicine_number = " << medicineNumber <<
-            " WHERE request_id = " << requestId <<
-            " AND medicine_id =" << medicineId << ";";
 
-        SqlExecutor::executeSql(sqlhdbc, oss.str());
+    int getMedicineId() const {
+        return medicineId;
+    }
+
+    int getRequestId() const {
+        return requestId;
+    }
+
+    int getMedicineNumber() const {
+        return medicineNumber;
+    }
+
+    void setMedicineNumber(int medicineNumber) {
+        MedicineBuying::medicineNumber = medicineNumber;
     }
 
 private:
@@ -84,11 +82,7 @@ private:
     int medicineId;
     int medicineNumber;
 
-    static MedicineBuying parseFromVector(const vector<string> &vector) {
-        return {stoi(vector[0]), stoi(vector[1]), stoi(vector[2])};
-    }
-
-    void checkMedicineExistence(SQLHDBC sqlhdbc) {
+    void checkMedicineExistence(SQLHDBC sqlhdbc) const {
         ostringstream oss;
         oss << "SELECT 1 FROM medicines WHERE id = " << medicineId << ";";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
@@ -98,7 +92,7 @@ private:
         }
     }
 
-    void checkRequestExistence(SQLHDBC sqlhdbc) {
+    void checkRequestExistence(SQLHDBC sqlhdbc) const {
         ostringstream oss;
         oss << "SELECT 1 FROM requests WHERE id = " << requestId << ";";
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
@@ -106,6 +100,11 @@ private:
         if (results.empty() || results[0][0] != "1") {
             throw runtime_error("Request not found");
         }
+    }
+
+    static void checkMedicineBuyingExistence(SQLHDBC sqlhdbc, int requestId, int medicineId) {
+        if (isMedicineBuyingExists(sqlhdbc, requestId, medicineId))
+            throw runtime_error("Medicine buying already exists");
     }
 
     static bool isMedicineBuyingExists(SQLHDBC sqlhdbc, int requestId, int medicineId) {
@@ -120,12 +119,9 @@ private:
         return false;
     }
 
-    static void checkMedicineBuyingExistence(SQLHDBC sqlhdbc, int requestId, int medicineId) {
-        if (isMedicineBuyingExists(sqlhdbc, requestId, medicineId))
-            throw runtime_error("Medicine buying already exists");
+    static MedicineBuying parseFromVector(const vector<string> &vector) {
+        return {stoi(vector[0]), stoi(vector[1]), stoi(vector[2])};
     }
-
-
 };
 
 
