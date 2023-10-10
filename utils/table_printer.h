@@ -35,12 +35,7 @@ private:
 
     static void printHeader(const vector<string> &headers, const vector<int> &columnWidths) {
         for (int i = 0; i < headers.size(); i++) {
-            cout << headers[i];
-            int spaces = columnWidths[i] - headers[i].size();
-            for (int j = 0; j < spaces; j++) {
-                cout << " ";
-            }
-            cout << "\t| ";
+            cout << setw(columnWidths[i]) << left << headers[i] << "\t| ";
         }
         cout << endl;
     }
@@ -57,12 +52,7 @@ private:
 
     static void printRow(const vector<string> &row, const vector<int> &columnWidths) {
         for (int i = 0; i < row.size(); i++) {
-            cout << row[i];
-            int spaces = columnWidths[i] - row[i].size();
-            for (int j = 0; j < spaces; j++) {
-                cout << " ";
-            }
-            cout << "\t| ";
+            cout << setw(columnWidths[i]) << left << row[i] << "\t| ";
         }
         cout << endl;
     }
