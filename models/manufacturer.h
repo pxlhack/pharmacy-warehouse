@@ -13,12 +13,30 @@ public:
     Manufacturer(string name, int countryId) :
             name(std::move(name)), countryId(countryId) {}
 
+
     void save(SQLHDBC sqlhdbc) {
+        try {
+            checkCountryExistence(sqlhdbc);
+        }
+        catch (const runtime_error &e) {
+            throw;
+        }
+
         ostringstream oss;
-        oss << "INSERT INTO manufacturers(name, country_id) VALUES('" << name << "', " << countryId << ");";
+        oss << "INSERT INTO manufacturers(name, country_id) "
+               "VALUES('" << name << "', " << countryId << ");";
         SqlExecutor::executeSql(sqlhdbc, oss.str());
     }
 
+    void update(SQLHDBC sqlhdbc) {
+        ostringstream oss;
+        oss << "UPDATE manufacturers "
+               "SET name = '" << name <<
+            "', country_id = '" << countryId <<
+            "' WHERE id = " << id << ";";
+
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
+    }
 
     static vector<Manufacturer> findAll(SQLHDBC sqlhdbc) {
         string selectSql = "SELECT * FROM manufacturers;";
@@ -44,18 +62,6 @@ public:
         return parseFromVector(results[0]);
     }
 
-
-    void update(SQLHDBC sqlhdbc) {
-        ostringstream oss;
-        oss << "UPDATE manufacturers "
-               "SET name = '" << name <<
-            "', country_id = '" << countryId <<
-            "' WHERE id = " << id << ";";
-
-        SqlExecutor::executeSql(sqlhdbc, oss.str());
-    }
-
-
     static void deleteById(SQLHDBC sqlhdbc, int id) {
         if (isManufacturerExists(sqlhdbc, id)) {
             if (!doesAnyMedicineToManufacturer(sqlhdbc, id)) {
@@ -71,6 +77,7 @@ public:
             throw runtime_error("Medicine buying not found");
         }
     }
+
 
     const string &getName() const {
         return name;
@@ -126,6 +133,15 @@ private:
         return false;
     }
 
+    void checkCountryExistence(SQLHDBC sqlhdbc) {
+        ostringstream oss;
+        oss << "SELECT 1 FROM countries WHERE id = " << countryId << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
+
+        if (results.empty() || results[0][0] != "1") {
+            throw runtime_error("Country not found");
+        }
+    }
 };
 
 
