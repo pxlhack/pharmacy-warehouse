@@ -41,12 +41,6 @@ public:
         return name;
     }
 
-    string toString() {
-        ostringstream oss;
-        oss << "{id = " << id << "; name = " << name << "}";
-        return oss.str();
-    }
-
 private:
     int id;
     string name;
@@ -56,13 +50,6 @@ private:
 
     explicit Country(const string &name) :
             name(name) {}
-
-    void save(SQLHDBC sqlhdbc) {
-        ostringstream oss;
-        oss << "INSERT INTO countries(name) VALUES(" << name << ");";
-        SqlExecutor::executeSql(sqlhdbc, oss.str());
-    }
-
 
     static Country parseFromVector(vector<string> row) {
         return {stoi(row[0]), row[1]};
