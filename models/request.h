@@ -31,6 +31,22 @@ public:
         vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, insertSql);
     }
 
+    void update(SQLHDBC sqlhdbc) {
+        try {
+            checkPharmacyExistence(sqlhdbc, pharmacyId);
+        }
+        catch (const runtime_error &e) {
+            throw e;
+        }
+        ostringstream oss;
+        oss << "UPDATE requests "
+               "SET creation_date = '" << creationDate.toString() << "', " <<
+            "completion_date = '" << completionDate.toString() << "', " <<
+            "pharmacy_id = " << pharmacyId <<
+            " WHERE id = " << id << ";";
+
+        SqlExecutor::executeSql(sqlhdbc, oss.str());
+    }
 
     static vector<Request> findAll(SQLHDBC sqlhdbc) {
         string selectSql = "SELECT * FROM requests;";
@@ -56,52 +72,6 @@ public:
         return parseFromVector(results[0]);
     }
 
-    int getPharmacyId() const {
-        return pharmacyId;
-    }
-
-    int getId() const {
-        return id;
-    }
-
-    const Date &getCreationDate() const {
-        return creationDate;
-    }
-
-    const Date &getCompletionDate() const {
-        return completionDate;
-    }
-
-    void setCreationDate(const Date &creationDate) {
-        Request::creationDate = creationDate;
-    }
-
-    void setCompletionDate(const Date &completionDate) {
-        Request::completionDate = completionDate;
-    }
-
-    void setPharmacyId(int pharmacyId) {
-        Request::pharmacyId = pharmacyId;
-    }
-
-
-    void update(SQLHDBC sqlhdbc) {
-        try {
-            checkPharmacyExistence(sqlhdbc, pharmacyId);
-        }
-        catch (const runtime_error &e) {
-            throw e;
-        }
-        ostringstream oss;
-        oss << "UPDATE requests "
-               "SET creation_date = '" << creationDate.toString() << "', " <<
-            "completion_date = '" << completionDate.toString() << "', " <<
-            "pharmacy_id = " << pharmacyId <<
-            " WHERE id = " << id << ";";
-
-        SqlExecutor::executeSql(sqlhdbc, oss.str());
-    }
-
     static void deleteById(SQLHDBC sqlhdbc, int id) {
         if (isRequestExists(sqlhdbc, id)) {
             if (!doesAnyMedicineBuyingReferToRequest(sqlhdbc, id)) {
@@ -118,6 +88,7 @@ public:
         }
     }
 
+
     void complete(SQLHDBC sqlhdbc) {
         completionDate = Date::getCurrentDate();
         update(sqlhdbc);
@@ -127,6 +98,35 @@ public:
         Request request(Date::getCurrentDate(), pharmacyId);
         request.save(sqlhdbc);
         return request;
+    }
+
+
+    int getId() const {
+        return id;
+    }
+
+    int getPharmacyId() const {
+        return pharmacyId;
+    }
+
+    const Date &getCreationDate() const {
+        return creationDate;
+    }
+
+    const Date &getCompletionDate() const {
+        return completionDate;
+    }
+
+    void setPharmacyId(int pharmacyId) {
+        Request::pharmacyId = pharmacyId;
+    }
+
+    void setCreationDate(const Date &creationDate) {
+        Request::creationDate = creationDate;
+    }
+
+    void setCompletionDate(const Date &completionDate) {
+        Request::completionDate = completionDate;
     }
 
 private:
@@ -145,13 +145,15 @@ private:
             creationDate(creationDate), pharmacyId(pharmacyId) {}
 
 
-    static Request parseFromVector(const vector<string> &vector) {
-        int id = stoi(vector[0]);
-        Date creationDate = Date::parseFromStringFromDB(vector[1]);
-        Date completionDate = Date::parseFromStringFromDB(vector[2]);
-        int pharmacyId = stoi(vector[3]);
+    static bool isRequestExists(SQLHDBC sqlhdbc, int id) {
+        ostringstream oss;
+        oss << "SELECT 1 FROM requests WHERE id = " << id << ";";
+        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
 
-        return {id, creationDate, completionDate, pharmacyId};
+        if (!results.empty() && results[0][0] == "1") {
+            return true;
+        }
+        return false;
     }
 
     static void checkPharmacyExistence(SQLHDBC sqlhdbc, int pharmacyId) {
@@ -164,17 +166,6 @@ private:
         }
     }
 
-    static bool isRequestExists(SQLHDBC sqlhdbc, int id) {
-        ostringstream oss;
-        oss << "SELECT 1 FROM requests WHERE id = " << id << ";";
-        vector<vector<string>> results = SqlExecutor::executeSql(sqlhdbc, oss.str());
-
-        if (!results.empty() && results[0][0] == "1") {
-            return true;
-        }
-        return false;
-    }
-
     static bool doesAnyMedicineBuyingReferToRequest(SQLHDBC sqlhdbc, int id) {
         ostringstream oss;
         oss << "SELECT 1 FROM medicine_buyings WHERE request_id = " << id << ";";
@@ -185,6 +176,14 @@ private:
         return false;
     }
 
+    static Request parseFromVector(const vector<string> &vector) {
+        int id = stoi(vector[0]);
+        Date creationDate = Date::parseFromStringFromDB(vector[1]);
+        Date completionDate = Date::parseFromStringFromDB(vector[2]);
+        int pharmacyId = stoi(vector[3]);
+
+        return {id, creationDate, completionDate, pharmacyId};
+    }
 };
 
 
